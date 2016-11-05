@@ -52,7 +52,7 @@ class Database
         if ($this->conn == null) {
             return;
         }
-        $this->conn->Close();
+        $this->conn->close();
         $this->conn = null;
     }
     
