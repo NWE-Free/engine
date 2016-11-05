@@ -569,31 +569,31 @@ function InstallStep($step)
             fwrite($file, "\$language=\"$language\";\n");
             fwrite($file, "\n");
             fwrite($file, "// Config values stored of file system\n");
-            fwrite($file, "\$storeXmlConfig = FALSE;\n");
+            fwrite($file, "\$storeXmlConfig = false;\n");
             fwrite($file, "\n");
             fwrite($file, "// If set to true, the error details will be display for all even non-admins.\n");
-            fwrite($file, "\$alwaysShowErrorDetails = FALSE;\n");
+            fwrite($file, "\$alwaysShowErrorDetails = false;\n");
             fwrite($file, "\n");
             fwrite($file, "// If set to true the hook file will be cached.\n");
             if ($hookCache == false) {
-                fwrite($file, "\$hookCache = FALSE;\n");
+                fwrite($file, "\$hookCache = false;\n");
             } else {
-                fwrite($file, "\$hookCache = TRUE;\n");
+                fwrite($file, "\$hookCache = true;\n");
             }
             fwrite($file, "\n");
             fwrite($file, "// If set to true HTML will be blocked in all GET and POST\n");
             if (!isset($blockHTML) || $blockHTML == true) {
-                fwrite($file, "\$blockHTML = TRUE;\n");
+                fwrite($file, "\$blockHTML = true;\n");
             } else {
-                fwrite($file, "\$blockHTML = FALSE;\n");
+                fwrite($file, "\$blockHTML = true;\n");
             }
             fwrite($file, "\n");
             fwrite($file,
                 "// If set to false, static content like JPG, GIF, PNG, JS and CSS will not be cached. Good while developing.\n");
             if (!isset($enableHTTPCache) || $enableHTTPCache == true) {
-                fwrite($file, "\$enableHTTPCache = TRUE;\n");
+                fwrite($file, "\$enableHTTPCache = true;\n");
             } else {
-                fwrite($file, "\$enableHTTPCache = FALSE;\n");
+                fwrite($file, "\$enableHTTPCache = false;\n");
             }
             fclose($file);
             
