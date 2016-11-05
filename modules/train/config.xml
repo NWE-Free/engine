@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module name="Training" version="1.0.5" author="Alain Bertrand"
+		description="Allows players to spend money to gain some stats." />
+	<key name="trainVisitTime"
+		description="The time the player have to wait between the different visits (in sec.)"
+		value="3600" />
+	<variable name="trainingInProgress" />
+	<variable name="nbTrainingRemaining" />
+	<variable name="nextTrainingVisit" />
+	<table name="trainings">
+		<condition_wizard column="requirements" />
+		<condition_wizard column="display_condition" />
+		<action_wizard column="effect" />
+	</table>
+	<theme_table name="trainings"/>
+</configuration>

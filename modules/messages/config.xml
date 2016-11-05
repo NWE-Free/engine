@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.6" name="Messages" author="Alain Bertrand" description="Allows players to exchange messages like emails."/>
+	<key name="messageListHeight" description="In pixels the height of the list of received messages."
+		value="150" />
+	<key name="allowsMultipleDestinations"
+		description="If set to true, multiple destinations can be chosen for a single message (separated by a comma), however the smart selection will be disabled."
+		value="false" options="true,false" />
+	<user_data table="messages" column="inbox_of" />
+	<user_data table="messages" column="from_user" />		
+</configuration>

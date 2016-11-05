@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.4" name="Inside Menu" author="Alain Bertrand"
+		description="Implements the in game side menu." />
+	<key name="hideMenuGroupEntries"
+		description="If set to true, menu items inside a group are not directly visible, instead the user must click on the group to see them."
+		value="false" options="true,false" />
+	<key name="showAllMenuGroups" description="If set to true, all menu groups will be used."
+		value="true" options="true,false" />
+	<table name="inside_menu_ext"></table>
+</configuration>

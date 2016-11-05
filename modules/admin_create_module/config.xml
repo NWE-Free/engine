@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.1" name="Admin Create Module" author="Alain Bertrand" type="admin"
+		description="A Wizard tool which creates the main files and structure of new modules. To be used only if a new module needs to be developed." />
+</configuration>

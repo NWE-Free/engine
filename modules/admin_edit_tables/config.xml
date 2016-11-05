@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.11" name="Admin Edit Table" author="Alain Bertrand" type="admin"
+		description="Allows you to access specific tables (through config.xml) for browsing as well as editing. For security reasons only allowed tables can be access through this modules." />
+		<key name="useTableEditorWizards" description="If set to true (the default) the table editor module will use the wizards for the logic and the actions. If set to false, a text area is instead used." value="true" options="true,false" />
+</configuration>

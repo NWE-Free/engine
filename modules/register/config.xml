@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.4" name="Register" author="Alain Bertrand"
+		description="Allows player to create new accounts." />
+	<key name="minPasswordLength" value="6"
+		description="Minimum character lenght for a password." />
+	<key name="registrationEnabled" value="true"
+		description="If set to false, it will not be possible to register new accounts."
+		options="true,false" />
+</configuration>

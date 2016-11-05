@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.0" name="Restore Stats" author="Alain Bertrand"
+		description="Restore some of the stats over time. The configuration is on the stats themselves." />
+	<variable name="statsLastCheck" />
+</configuration>

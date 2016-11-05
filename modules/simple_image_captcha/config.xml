@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.1" name="Simple Image Captcha" author="Alain Bertrand"
+		description="Handles a complete captcha system which should reduce if not block all bots." />
+	<key name="captchaNoise" value="yes"
+		description="Add noise over the captcha image. Increase difficulty for OCR as well as for the user to read it." options="yes,no" />
+	<key name="captchaDeform" value="2.5"
+		description="Deformation ratio. A value of 0 would mean a straight text." />
+	<key name="captchaLength" value="5" description="Length of the text to type back." />
+</configuration>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+<module version="1.0.0" name="Add Gold" author="Alain Bertrand"
+	description="This is a small hack which should be removed on a running game. Allows you to add gold to the current player with a single click." />
+</configuration>

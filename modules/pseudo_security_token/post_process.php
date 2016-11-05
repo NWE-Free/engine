@@ -1,0 +1,3 @@
+<?php
+$output = Secure($output);
+    

@@ -1,0 +1,92 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color: white;
+}
+
+#mainContent {
+	border: solid 1px black;
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+	background-color: #FFE080;
+	padding: 5px;
+}
+
+.title {
+	font-weight: bold;
+	font-size: 18px;
+}
+
+.borderTable {
+	width: 100%;
+	border: solid 1px #000000;
+	border-collapse: collapse;
+	text-align: left;
+	background-color: #E0E0E0;
+}
+
+.plainTable {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+
+.windowTitle {
+	width: 100%;
+	background-Color: black;
+	color: white;
+	font-weight: bold;
+	text-align: center;
+}
+
+.windowContent {
+	background-Color: #E0E0E0;
+	border: solid 1px black;
+	margin-bottom: 10px;
+}
+
+.buttonArea {
+	text-align: center;
+	margin: 10px;
+}
+
+input[type="text"] {
+	border: solid 1px #000000;
+	background-color: #FFFFFF;
+	padding: 2px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+}
+
+textarea {
+	border: solid 1px #000000;
+	background-color: #FFFFFF;
+	padding: 2px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+}
+
+select {
+	border: solid 1px #000000;
+	background-color: #FFFFFF;
+	padding: 2px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+}
+
+.linkButton:before {
+content: ' [';	
+}
+
+.linkButton:after {
+content: ' ]';	
+}

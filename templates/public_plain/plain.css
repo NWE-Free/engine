@@ -1,0 +1,93 @@
+@CHARSET "ISO-8859-1";
+
+body
+{
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color: white;
+}
+
+#statArea
+{
+	height: 80px;
+	width: 100%;
+	border: solid 1px black;
+	margin-bottom: 5px;
+	padding: 2px;
+}
+
+#sideMenu
+{
+	width: 180px;
+	border: solid 1px black;
+	float: left;
+	padding: 2px;
+}
+
+#mainContent
+{
+	border: solid 1px black;
+	margin-left: 200px;
+	padding: 2px;
+}
+
+.title
+{
+	font-weight: bold;
+}
+
+.errorInfo
+{
+	color: red;
+	font-weight: bold;
+	background-color: #FFE080;
+	display: block;
+	border: solid 1px #E08060;
+	padding: 2px;
+	text-align: center;
+	font-size: 14px;
+}
+
+.resultInfo
+{
+	color: black;
+	font-weight: bold;
+	background-color: #80FF80;
+	display: block;
+	border: solid 1px #60E060;
+	padding: 2px;
+	text-align: center;
+	font-size: 14px;
+}
+
+select {
+	border: solid 1px #000000;
+	background-color: #FFFFFF;
+	padding: 2px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+}
+
+.linkButton
+{
+	font-weight: bold;
+	text-decoration: none;
+	color: blue;
+}
+
+.linkButton:before {
+	content: ' [';
+	color: black;
+}
+
+.linkButton:after {
+	content: '] ';
+	color: black;
+}
+
+.buttonArea {
+	text-align: center;
+	margin: 10px;
+}

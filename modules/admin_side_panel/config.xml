@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.3" name="Admin Side Panel" author="Alain Bertrand" type="admin"
+		description="Allows to display the side panel on all admin modules" />
+</configuration>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.1" name="Admin Profiler" author="Alain Bertrand"
+		description="Shows profiling information in the side menu as well as recording / displaying the queries executed during the last page load of the user." />
+</configuration>

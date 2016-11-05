@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.3" name="Cron" author="Alain Bertrand"
+		description="The daily cron system. Can be set to be run from the cron system of the server or embeded within the game (default setup)." />
+	<key name="embeddedCron" value="yes"
+		description="If set to yes, you don't need to run crons from the cron command, however it may slow down a bit your game."
+		options="true,false" />
+	<key name="lastCronRun" value=""
+		description="Do not touch, it will be set automatically by the cron module."
+		browsable="false" />
+</configuration>

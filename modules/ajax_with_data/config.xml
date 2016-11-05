@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.0" name="Ajax Width Data" author="Alain Bertrand"
+		type="module"
+		description="A simple ajax demo act like a calculator with the logic on the server side." />
+</configuration>

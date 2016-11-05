@@ -1,0 +1,2 @@
+<?php
+Ajax::EnterSubmit("loginForm");

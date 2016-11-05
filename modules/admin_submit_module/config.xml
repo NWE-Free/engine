@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.2" name="Admin Submit Module" author="Alain Bertrand" type="admin"
+		description="Uploads a module to the marketplace for review. If accepted you will be able to distribute your module through the official modules market place (free or not)." />
+</configuration>

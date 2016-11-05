@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module name="core" version="1.1.7" author="Alain Bertrand" />
+	<key name="gameOnline"
+		description="If set to false, only admin will be able to play with the game."
+		value="true" options="true,false" />
+	<key name="currencyStat" value="Gold"
+		description="The stat used for the currency within the game." />
+	<key name="dateFormat" value="F j, Y g:i:s a"
+		description="The date format used through the game." />
+	<key name="shortDateFormat" value="m/d/Y"
+		description="The date format used through the game." />
+	<key name="defaultTimeZone"
+		description="The default time zone on which the game runs. Used only if the date.timezone is not set in the php.ini file."
+		value="UTC" />
+	<key name="defaultDecimalSeparator" value="."
+		description="The default decimal separator used while displaying numbers." />
+	<key name="defaultThousandSeparator" value=","
+		description="The default thousand separator used while displaying numbers." />
+	<user_data table="users" column="id" />
+	<user_data table="bad_trials" column="user_id" />
+	<user_data table="user_roles" column="user_id" />
+	<user_data table="user_stats" column="user_id" />
+	<user_data table="user_variables" column="user_id" />
+	<user_data table="inventory" column="user_id" />
+	<user_data table="equiped" column="user_id" />		
+</configuration>

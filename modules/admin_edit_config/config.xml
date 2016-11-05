@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.2" name="Admin Edit Config" author="Alain Bertrand"
+		description="Configuration keys found in the config.xml files are editable via this module."
+		type="admin" />
+</configuration>

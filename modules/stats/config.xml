@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.3" name="Stats" author="Alain Bertrand"
+		description="Shows the player stats on the top part of the pages." />
+	<theme_table name="user_stat_types" />
+</configuration>

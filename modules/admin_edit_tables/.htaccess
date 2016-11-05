@@ -1,0 +1,9 @@
+<FilesMatch "\.(png|jpg|gif|js|css)$">
+  allow from all
+</FilesMatch>
+<files known_actions.php>
+	allow from all
+</files>
+<files known_conditions.php>
+	allow from all
+</files>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.7" name="Admin Panel" type="admin" author="Alain Bertrand"
+		description="Administrative panel, contains all the options for administrators and moderators to handle the game." />
+	<key name="workOffline"
+		description="Allows to work offline and therefore not check the markeplace anymore. Useful if you work on a laptop but stop the possibility to download modules or updates directly."
+		value="false" options="true,false" />
+</configuration>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.1" name="Admin Add Items" author="Alain Bertrand" type="admin"
+		description="Allows you to give items to players. Can be used for debug purpose or simple rewards." />
+</configuration>

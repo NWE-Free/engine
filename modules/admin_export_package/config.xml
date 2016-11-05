@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.2" name="Admin Export Package" author="Alain Bertrand" type="admin"
+		description="Export a module and all it's contents as single .nwp file which can be then imported on another engine installation through the appropriate admin menu." />
+</configuration>

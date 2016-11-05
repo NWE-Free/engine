@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module name="Inventory" version="1.0.11" author="Alain Bertrand"
+		description="Allows users to manage their inventory, drop items, view them and equip / un-equip them." />
+	<key name="itemsHealth" value="true"
+		description="If set to true items can wear out and be destroyed."
+		options="true,false" />
+	<key name="itemsCanBeDropped" value="true"
+		description="If set to true items can be dropped from the inventory."
+		options="true,false" />
+	<table name="object_types">
+		<action_wizard column="usage_code" />
+	</table>
+	<table name="object_types_attributes">
+		<lookup column="object_type" table="object_types" key="id"
+			display="name" />
+	</table>
+	<table name="objects" special_editor="object_editor.php">
+		<condition_wizard column="requirements" />
+		<action_wizard column="usage_code" />
+		<lookup column="object_type" table="object_types" key="id"
+			display="name" />
+	</table>
+	<table name="slots" />
+	<table name="slot_type_accepted">
+		<lookup column="slot_id" table="slots" key="id" display="name" />
+		<lookup column="object_type" table="object_types" key="id"
+			display="name" />
+	</table>
+	<theme_table name="object_types" />
+	<theme_table name="object_types_attributes" />
+	<theme_table name="objects" />
+	<theme_table name="slots" />
+	<theme_table name="slot_type_accepted" />
+</configuration>

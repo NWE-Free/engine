@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.nw-engine.com/modules.xsd">
+	<module version="1.0.2" name="Admin Code Editor" author="Alain Bertrand"
+		type="admin"
+		description="Allows you to edit engine files directly. Use it wisely and should maybe be removed from a productive game." />
+	<key name="codeEditorAllowSave" description="Defines if the code editor can or cannot save directly"
+		value="true" browsable="false" options="true,false"/>
+</configuration>
