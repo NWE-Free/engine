@@ -16,11 +16,11 @@ $template = "plain";
 // Database host
 $dbhost = "localhost";
 // Database username
-$dbuser = "nwe-dev";
+$dbuser = "";
 // Database password
-$dbpass = "nwe-dev";
+$dbpass = "";
 // Database name
-$dbname = "nwe-dev";
+$dbname = "";
 
 // Default module to load once logged in
 $defaultModule = "home";
