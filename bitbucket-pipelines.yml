@@ -7,5 +7,4 @@ pipelines:
           - apt-get update && apt-get install -y git
           - php -r "readfile('https://getcomposer.org/installer');" | php
           - php composer.phar global require hirak/prestissimo
-          - php composer.phar install --prefer-dist
           - ./vendor/bin/grumphp run
