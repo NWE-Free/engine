@@ -9,7 +9,7 @@ class UserStat
 {
     private $data = array();
     
-    public function UserStat(
+    public function __construct(
         $typeId,
         $name = null,
         $value = 0.0,
