@@ -12,15 +12,17 @@ $startEngineTime = $lastEngineTime = ((float)$usec + (float)$sec);
 ob_start();
 header("Expires: now");
 
+if (version_compare(PHP_VERSION, '5.4.0', '<=')) {
 // Clean the "magic" quotes if any as they are just counter productive.
-if (get_magic_quotes_gpc() != 0) {
-    foreach ($_GET as $key => $value) {
-        $_GET[$key] = stripcslashes($value);
-    }
-    
-    foreach ($_POST as $key => $value) {
-        if (!is_array($value)) {
-            $_POST[$key] = stripcslashes($value);
+    if (get_magic_quotes_gpc() != 0) {
+        foreach ($_GET as $key => $value) {
+            $_GET[$key] = stripcslashes($value);
+        }
+        
+        foreach ($_POST as $key => $value) {
+            if (!is_array($value)) {
+                $_POST[$key] = stripcslashes($value);
+            }
         }
     }
 }
@@ -48,7 +50,8 @@ function __autoload($className)
         "Database" => "libs/db.php",
         "UserStat" => "libs/stats.php",
         "Item" => "libs/items.php",
-        "Ajax" => "libs/ajax.php"
+        "Ajax" => "libs/ajax.php",
+        "Request" => "libs/request.php"
     );
     if (isset($classes[$className])) {
         include $classes[$className];
