@@ -103,7 +103,7 @@ class Item
         $sql = "select object_types_attributes.name, s1.value from object_types_attributes
                 left join (select * from object_attributes where object_id=?) s1
                 on object_types_attributes.id = s1.attribute_id
-                where object_types_attributes.name = ?";
+                where object_types_attributes.object_type = ?";
         
         $result = $db->Execute($sql, $objectId, $obj->attributes['object_type_id']);
         
