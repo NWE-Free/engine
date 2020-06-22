@@ -16,14 +16,14 @@ if (isset($_GET['drop'])) {
     if ($obj == null) {
         return;
     }
-    
+
     // There is more than one item, thefore we need to ask how many to drop.
     if ($obj->quantity + 0 > 1 && !isset($_POST['confirm'])) {
         echo "<form method='post' name='dropItems'>";
         TableHeader("How many to drop");
         echo "<input type='text' name='confirm' value='{$obj->quantity}'>";
         TableFooter();
-        
+
         ButtonArea();
         SubmitButton("Drop", "dropItems");
         LinkButton("Cancel", "index.php?p=inventory");
@@ -45,7 +45,7 @@ if (isset($_GET['drop'])) {
                 }
                 Item::InventoryRemove($_GET['drop'], $obj->quantity);
             }
-            
+
             ResultMessage("Item(s) dropped.");
         } catch (Exception $ex) {
             ErrorMessage($ex->getMessage());
@@ -121,7 +121,7 @@ foreach ($objects as $obj) {
         LinkButton("Un-Equip", "index.php?p=inventory&unequip=" . urlencode($obj->slot));
         echo "</td>";
     }
-    echo "<td width='1%'>" . ($obj->image_file == null ? "&nbsp;" : "<img src='{$webBaseDir}modules/inventory/images/$obj->image_file'>") . "</td>";
+    echo "<td width='1%'>" . ($obj->image_file == null ? "&nbsp;" : "<img src='{$webBaseDir}modules/inventory/images/$obj->image_file' width='85px' height='85px'>") . "</td>";
     echo "<td>{$obj->slot}</td>";
     if ($obj->name == "") {
         echo "<td>&nbsp;</td>";
@@ -171,18 +171,18 @@ foreach ($objects as $obj) {
             echo "</table></td></tr>";
         }
         $objectType = $obj->object_type;
-        
+
         echo "<tr class='titleLine'>";
         echo "<td style='text-align: center; cursor: pointer;' onclick='InventoryGroupClick({$group_id});'>";
-        echo "<img id='iv_img_{$group_id}' src='$webBaseDir/images/plus.png' align='left'>";
-        
+        echo "<img id='iv_img_{$group_id}' src='{$webBaseDir}images/plus.png' align='left'>";
+
         echo Translate($objectType) . "</td></tr>";
         echo "<tr><td id='iv_grp_{$group_id}' style='visibility: hidden; display: none;'><table class='plainTable'>";
         echo $descLine;
-        
+
         $group_id++;
     }
-    
+
     if ($row % 2 == 0) {
         echo "<tr class='evenLine'>";
     } else {
@@ -217,7 +217,7 @@ foreach ($objects as $obj) {
             echo "</td>";
         }
     }
-    echo "<td width='1%'>" . ($obj->image_file == null ? "&nbsp;" : "<img src='{$webBaseDir}modules/inventory/images/$obj->image_file'>") . "</td>";
+    echo "<td width='1%'>" . ($obj->image_file == null ? "&nbsp;" : "<img src='{$webBaseDir}modules/inventory/images/$obj->image_file' width='85px' height='85px'>") . "</td>";
     echo "<td>" . LinkItemDetails($obj->name, $obj->id) . "</td>";
     echo "<td>{$obj->quantity}</td>";
     if (GetConfigValue("itemsHealth") == "true") {
@@ -237,26 +237,27 @@ TableFooter();
 
 echo "</td></tr></table>";
 echo "<script src='{$webBaseDir}js/ajax_helper.js'></script>";
-echo "<script>var minusImage='{$webBaseDir}/images/minus.png';\nvar plusImage='{$webBaseDir}/images/minus.png';\n</script>";
 ?>
 <script>
+    var minusImage= '<?php echo $webBaseDir; ?>images/minus.png';
+    var plusImage= '<?php echo $webBaseDir; ?>images/plus.png';
     var oldIvGroup = -1;
-    
     function InventoryGroupClick(grpId) {
         var c = getCookie("settings");
         var data = new Object();
-        if (c != null)
+        if (c != null || c !== "undefined")
             data = jsDeserializer(c);
-        
+        else
+            setCookie("settings", jsSerializer(data), 30);
         var ivGrp = "";
-        if (data['iv_grp'] != undefined && data['iv_grp'] != null)
+        if (data['iv_grp'] !== undefined && data['iv_grp'] != null)
             ivGrp = data['iv_grp'];
         ivGrp = pad("" + ivGrp, grpId + 1, '0');
         var div = null;
-        
+
         div = document.getElementById('iv_grp_' + grpId);
-        
-        if (div.style.visibility == 'visible') {
+
+        if (div.style.visibility === 'visible') {
             div.style.visibility = 'hidden';
             div.style.display = 'none';
             document.getElementById('iv_img_' + grpId).src = plusImage;
@@ -270,14 +271,15 @@ echo "<script>var minusImage='{$webBaseDir}/images/minus.png';\nvar plusImage='{
         }
         setCookie("settings", jsSerializer(data), 30);
     }
-    
+
     function InitIvGroup() {
         var c = getCookie("settings");
         var data = new Object();
         if (c == null)
             return;
         data = jsDeserializer(c);
-        
+
+        var ivGrp = "";
         if (data['iv_grp'] != undefined && data['iv_grp'] != null) {
             ivGrp = data['iv_grp'];
             for (var i = 0; i < ivGrp.length; i++) {
@@ -292,6 +294,6 @@ echo "<script>var minusImage='{$webBaseDir}/images/minus.png';\nvar plusImage='{
             }
         }
     }
-    
+
     InitIvGroup();
 </script>

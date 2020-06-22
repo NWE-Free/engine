@@ -5,11 +5,11 @@
  */
 class Database
 {
-    
+
     public $conn = null;
     public $error = null;
     public $lastQuery = "";
-    
+
     /**
      * Opens a new database connection using the MySQLi library
      *
@@ -22,12 +22,11 @@ class Database
      * @param $dbname   string
      *                  database schema name
      *
-     * @return \Database
      */
     function __construct($host, $username, $password, $dbname)
     {
         $_SESSION["profiler_db"] = array();
-        
+
         try {
             $errLevel = error_reporting();
             error_reporting(0);
@@ -43,7 +42,7 @@ class Database
             $this->error = "Cannot connect";
         }
     }
-    
+
     /**
      * Closes the connection.
      */
@@ -55,31 +54,28 @@ class Database
         $this->conn->close();
         $this->conn = null;
     }
-    
+
     /**
      * Loads the first row of a query into an array with the keys being the
      * columns names.
      * The query is then closed.
      *
-     * @param $args mixed
-     *              if a single sql statement is passed, then it is directly
-     *              executed otherwise bind the ? with the parameters.
-     *
      * @return array an array containing the first row.
+     * @throws \Exception
      */
     function LoadData()
     {
         $return = array();
-        
+
         $vars = func_get_args();
-        
+
         if (count($vars) == 1) {
             $result = $this->Execute($vars[0]);
         } else {
             $query = array_shift($vars);
             $result = $this->Execute($query, $vars);
         }
-        
+
         $fields = $result->FetchFields();
         for ($i = 0; $i < count($fields); $i++) {
             if ($result->EOF) {
@@ -89,10 +85,10 @@ class Database
             }
         }
         $result->Close();
-        
+
         return $return;
     }
-    
+
     /**
      * Execute an SQL statement
      *
@@ -107,31 +103,31 @@ class Database
     function Execute()
     {
         global $demoEngine;
-        
+
         $numargs = func_num_args();
         $query = func_get_arg(0);
-        
+
         $this->lastQuery = $query;
-        
+
         if (isset($demoEngine) && $demoEngine === true) {
             list ($cmd,) = explode(" ", strtolower($query));
             if ($cmd != "select" && $cmd != "show") {
                 return null;
             }
         }
-        
+
         $time_start = Database::microtime_float();
-        
+
         $res = new resultset($this->conn);
         if ($numargs > 1) {
             $res->Prepare($query);
             $vars = func_get_args();
             array_shift($vars);
-            
+
             if (is_array($vars[0])) {
                 $vars = $vars[0];
             }
-            
+
             $format = "";
             foreach ($vars as $v) {
                 if (is_string($v)) {
@@ -147,30 +143,30 @@ class Database
                     throw new Exception("Type of variables not supported.");
                 }
             }
-            
+
             array_unshift($vars, $format);
-            
+
             $res->Bind($vars);
             $result = $res->ExecStatement();
         } else {
             $result = $res->Exec($query);
         }
         $this->error = $this->conn->connect_error;
-        
+
         if (isset($_SESSION["profiler"])) {
             $time_end = Database::microtime_float();
             $_SESSION["profiler_db"][] = array("query" => $query, "time" => ($time_end - $time_start));
         }
-        
+
         return $result;
     }
-    
+
     public static function microtime_float()
     {
         list ($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
     }
-    
+
     /**
      * Loads the whole result into an array.
      * The query is then closed.
@@ -184,24 +180,24 @@ class Database
     function LoadArray()
     {
         $return = array();
-        
+
         $vars = func_get_args();
-        
+
         if (count($vars) == 1) {
             $result = $this->Execute($vars[0]);
         } else {
             $query = array_shift($vars);
             $result = $this->Execute($query, $vars);
         }
-        
+
         foreach ($result as $row) {
             $result[] = $row;
         }
         $result->Close();
-        
+
         return $return;
     }
-    
+
     /**
      * Returns the id of the last insterted row (auto_increment value)
      *
@@ -224,13 +220,13 @@ class ResultRow extends ArrayObject
     public $lookupNames = null;
     private $isInit = false;
     private $resultSet;
-    
+
     public function __construct($data, $resultSet)
     {
         $this->data = $data;
         $this->resultSet = $resultSet;
     }
-    
+
     public function getIterator()
     {
         if ($this->lookupNames == null) {
@@ -238,7 +234,7 @@ class ResultRow extends ArrayObject
         }
         return new ResultRowIterator($this);
     }
-    
+
     public function offsetGet($index)
     {
         if (is_int($index)) {
@@ -250,7 +246,7 @@ class ResultRow extends ArrayObject
             return $this->data[$this->lookupNames[$index]];
         }
     }
-    
+
     public function offsetExists($index)
     {
         if (is_int($index)) {
@@ -265,7 +261,7 @@ class ResultRow extends ArrayObject
             return array_key_exists($index, $this->lookupNames);
         }
     }
-    
+
     public function __get($name)
     {
         if ($this->lookupNames == null) {
@@ -285,7 +281,7 @@ class ResultRowIterator implements Iterator
     private $resultRow;
     private $position = 0;
     private $names;
-    
+
     public function __construct($resultRow)
     {
         $this->resultRow = $resultRow;
@@ -294,27 +290,27 @@ class ResultRowIterator implements Iterator
             $this->names[] = $k;
         }
     }
-    
+
     function rewind()
     {
         $this->position = 0;
     }
-    
+
     function current()
     {
         return $this->resultRow->data[$this->position];
     }
-    
+
     function next()
     {
         $this->position++;
     }
-    
+
     function valid()
     {
         return key_exists($this->position, $this->resultRow->data);
     }
-    
+
     function key()
     {
         return $this->names[$this->position];
@@ -358,14 +354,14 @@ class Resultset implements Iterator
     private $conn;
     private $currentRow = 0;
     private $colLookup = null;
-    
+
     function __construct($conn)
     {
         $this->EOF = true;
         $this->result = null;
         $this->conn = $conn;
     }
-    
+
     function rewind()
     {
         if ($this->stmt != null) {
@@ -374,7 +370,7 @@ class Resultset implements Iterator
             $this->result->data_seek(0);
         }
     }
-    
+
     /**
      * Called by the ResultRow class this functions returns an array
      * with key being the column name and the value being the position in the
@@ -394,10 +390,10 @@ class Resultset implements Iterator
                 $pos++;
             }
         }
-        
+
         return $this->colLookup;
     }
-    
+
     /**
      * Returns an array with all the fields information.
      *
@@ -413,11 +409,11 @@ class Resultset implements Iterator
         }
         return $this->result->fetch_fields();
     }
-    
+
     public function __get($name)
     {
         global $dbResultAsObject;
-        
+
         if ($name == "fields") {
             if ($this->dataRow == null) {
                 $this->dataRow = new ResultRow($this->fieldsData, $this);
@@ -427,7 +423,7 @@ class Resultset implements Iterator
             throw new Exception("Can't get property $name.");
         }
     }
-    
+
     function current()
     {
         if ($this->dataRow == null) {
@@ -435,12 +431,12 @@ class Resultset implements Iterator
         }
         return $this->dataRow;
     }
-    
+
     function key()
     {
         return $this->currentRow;
     }
-    
+
     function next()
     {
         // Fix a double first row... for some reasons.
@@ -450,7 +446,7 @@ class Resultset implements Iterator
         }
         $this->MoveNext();
     }
-    
+
     /**
      * Moves to the next row.
      */
@@ -474,12 +470,12 @@ class Resultset implements Iterator
             }
         }
     }
-    
+
     function valid()
     {
         return !$this->EOF;
     }
-    
+
     function Prepare($query)
     {
         $this->stmt = $this->conn->prepare($query);
@@ -490,13 +486,13 @@ class Resultset implements Iterator
             throw new Exception("Wrong query.");
         }
     }
-    
+
     function Bind($arrParams)
     {
         $method = new ReflectionMethod('mysqli_stmt', 'bind_param');
         $method->invokeArgs($this->stmt, $this->ArrayOfReferenced($arrParams));
     }
-    
+
     private function ArrayOfReferenced($arr)
     {
         $refs = array();
@@ -505,7 +501,7 @@ class Resultset implements Iterator
         }
         return $refs;
     }
-    
+
     function ExecStatement()
     {
         $this->EOF = false;
@@ -515,7 +511,7 @@ class Resultset implements Iterator
         } else {
             $this->NbRows = $this->conn->affected_rows;
         }
-        
+
         $meta = $this->stmt->result_metadata();
         if (!$meta) {
             if ($this->result === false) {
@@ -529,7 +525,7 @@ class Resultset implements Iterator
                 return true;
             }
         }
-        
+
         $this->fieldsData = array();
         $params = array();
         $pos = 0;
@@ -538,12 +534,12 @@ class Resultset implements Iterator
             $pos++;
         }
         $meta->close();
-        
+
         $this->stmt->store_result();
-        
+
         $method = new ReflectionMethod('mysqli_stmt', 'bind_result');
         $method->invokeArgs($this->stmt, $params);
-        
+
         if ($this->stmt->fetch() !== true) {
             $this->EOF = true;
             $this->fieldsData = array();
@@ -552,7 +548,7 @@ class Resultset implements Iterator
         }
         return $this;
     }
-    
+
     function Exec($query)
     {
         $this->EOF = false;
@@ -562,7 +558,7 @@ class Resultset implements Iterator
         } else {
             $this->NbRows = $this->conn->affected_rows;
         }
-        
+
         if ($this->result === false) {
             $this->result = null;
             $this->EOF = true;
@@ -580,7 +576,7 @@ class Resultset implements Iterator
         }
         return $this;
     }
-    
+
     /**
      * Closes the result set.
      */
@@ -592,7 +588,7 @@ class Resultset implements Iterator
             @$this->result->free_result();
         }
     }
-    
+
     /**
      * Returns the number of rows of a result set.
      *
@@ -606,7 +602,7 @@ class Resultset implements Iterator
         $arr = $this->result->fetch_fields();
         return count($arr);
     }
-    
+
     /**
      * Returns a field information
      *
@@ -632,7 +628,7 @@ function CheckLicense($licenseKey)
     if (!file_exists("$baseDir/cache.php") && $licenseKey == "-") {
         return true;
     }
-    
+
     if (isset($_SESSION["engine_validity"])) {
         return $_SESSION["engine_validity"];
     }

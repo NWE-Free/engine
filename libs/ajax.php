@@ -6,7 +6,7 @@ class Ajax
     static $knownReturnFunctions = array();
     static $stopRefresh = null;
     static $timerFunction = null;
-    
+
     /**
      * Stops the AJAX refresher.
      *
@@ -21,7 +21,7 @@ class Ajax
             Ajax::$stopRefresh = $functionName;
         }
     }
-    
+
     /**
      * Registers a function which should modify the DOM content.
      *
@@ -34,7 +34,7 @@ class Ajax
         Ajax::LinkFunction($functionName, "AjaxCallback", $delay);
         Ajax::$knownFunctions[$functionName] = $domIdToUpdate;
     }
-    
+
     static private function LinkFunction($functionName, $callBack = "AjaxCallback", $delay = null)
     {
         global $content;
@@ -44,7 +44,7 @@ class Ajax
         Ajax::IncludeLib();
         $d = new ReflectionFunction($functionName);
         $params = $d->getParameters();
-        
+
         if (count($params) == 0) {
             if ($callBack != null && $delay != null) {
                 $content['footerJS'] .= "var {$functionName}_timeout = null;\n";
@@ -96,7 +96,7 @@ class Ajax
             }
         }
     }
-    
+
     /**
      * Includes JQuery to the page
      */
@@ -104,21 +104,21 @@ class Ajax
     {
         global $content, $jQueryLib, $webBaseDir;
         static $isJqueryIncluded = false;
-        
+
         if ($isJqueryIncluded) {
             return;
         }
-        
+
         $isJqueryIncluded = true;
-        
+
         if (!isset($jQueryLib)) {
-            $content['footerScript'] .= "<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>";
+            $content['footerScript'] .= "<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>";
         } else {
             $content['footerScript'] .= "<script src='$jQueryLib'></script>";
         }
         $content['footerScript'] .= "<script src='{$webBaseDir}js/ajax_helper.js'></script>";
     }
-    
+
     /**
      * Registers a PHP function to be used synchronously on JS
      *
@@ -129,7 +129,7 @@ class Ajax
         Ajax::LinkFunction($functionName, null);
         Ajax::$knownReturnFunctions[$functionName] = true;
     }
-    
+
     /**
      * Let the PHP code issue updates on various DOM parts.
      *
@@ -144,7 +144,7 @@ class Ajax
         }
         $content['dom_update'][$domId] = $newContent;
     }
-    
+
     /**
      * Setups a timer which will invoke periodically a JS/PHP function.
      *
@@ -166,7 +166,7 @@ class Ajax
         Ajax::$timerFunction = $functionName;
         Ajax::$knownFunctions[$functionName] = $domIdToUpdate;
     }
-    
+
     /**
      * Returns true if the page has been loaded via AJAX
      *
@@ -179,7 +179,7 @@ class Ajax
         }
         return false;
     }
-    
+
     /**
      * Used by the engine to call back the PHP function from JS.
      *
@@ -188,7 +188,7 @@ class Ajax
     static function RunRegisteredFunction($functionName)
     {
         global $content;
-        
+
         if (!array_key_exists($functionName, Ajax::$knownFunctions) && !array_key_exists($functionName,
                 Ajax::$knownReturnFunctions)
         ) {
@@ -196,11 +196,11 @@ class Ajax
         }
         ob_end_clean();
         ob_start();
-        
+
         $d = new ReflectionFunction($functionName);
         $params = $d->getParameters();
         $ret = "";
-        
+
         if (count($params) == 0) {
             if (array_key_exists($functionName, Ajax::$knownReturnFunctions)) {
                 eval("\$ret={$functionName}();");
@@ -218,7 +218,7 @@ class Ajax
                 $isFirst = false;
             }
             $code .= ");";
-            
+
             if (array_key_exists($functionName, Ajax::$knownReturnFunctions)) {
                 $code = "\$ret=$code";
             }
@@ -226,7 +226,7 @@ class Ajax
         }
         $out = ob_get_clean();
         header('Content-type: application/json');
-        
+
         if (array_key_exists($functionName, Ajax::$knownReturnFunctions)) {
             echo Ajax::ToJSON($ret);
         } else {
@@ -255,7 +255,7 @@ class Ajax
             echo "]";
         }
     }
-    
+
     /**
      * Transforms PHP data (string, numbers, arrays) into a JSON format.
      *
@@ -297,7 +297,7 @@ class Ajax
             }
         }
     }
-    
+
     /**
      * Shows a standard button with label and glues a JS code to it.
      *
@@ -310,10 +310,10 @@ class Ajax
     {
         global $baseDir, $template;
         $res = "";
-        
+
         $id = MakeId("btn_", $label);
         $label = Translate($label);
-        
+
         global $loadedTemplateFuncs, $baseDir, $template;
         if (!$loadedTemplateFuncs) {
             if (file_exists("$baseDir/templates/$template/functions.php")) {
@@ -321,7 +321,7 @@ class Ajax
             }
             $loadedTemplateFuncs = true;
         }
-        
+
         if (function_exists("TemplateLinkButton")) {
             $res = TemplateLinkButton($id, $label, "#", $jsFunction . ";return false;", null, true);
         } else {
@@ -334,7 +334,7 @@ class Ajax
         }
         echo $res;
     }
-    
+
     static function EnterSubmit($formName)
     {
         global $content;

@@ -28,12 +28,12 @@ else if (isset($_POST["msgTo"])) {
                 $_POST["msgSubject"] = "(" . Translate("No subject") . ")";
             }
             $msgContent = $_POST["msgContent"];
-            
+
             // Somebody tries to hack the message system?
             if (strpos($msgContent, "--* DO NOT TOUCH *--") !== false || strpos($msgContent, "--* MODULE:") !== false) {
                 return;
             }
-            
+
             // A module has been linked, we shall call the module
             if (isset($_SESSION["messageMetaData"]) && trim($_SESSION["messageMetaData"]) != "") {
                 $mods = explode("\n", $_SESSION["messageMetaData"]);
@@ -42,31 +42,31 @@ else if (isset($_POST["msgTo"])) {
                         str_replace("*--", "", trim(substr($messageModule, 11))));
                     $moduleName = strtolower(trim($moduleName));
                     parse_str(trim($moduleValues), $moduleValues);
-                    
+
                     if (file_exists("$baseDir/modules/$moduleName/message_handling.php")) {
                         include "$baseDir/modules/$moduleName/message_handling.php";
                     }
                 }
             }
-            
+
             global $moduleLink, $allOk;
             $moduleLink = "";
             $allOk = true;
             if (isset($_SESSION["messageMetaData"])) {
                 $moduleLink = "" . $_SESSION["messageMetaData"];
             }
-            
+
             RunHook("message_sending.php", array("moduleLink", "allOk"));
-            
+
             if ($moduleLink != "") {
                 $msgContent .= "\n\n--* DO NOT TOUCH *--\n" . $moduleLink;
             }
-            
+
             $_SESSION["messageMetaData"] = null;
             if ($allOk == true) {
                 SendMessage($_POST["msgTo"], $_POST["msgSubject"], $msgContent);
                 ResultMessage("Message sent successfully");
-                
+
                 $_POST["msgSubject"] = "";
                 $_POST["msgTo"] = "";
                 $_POST["msgContent"] = "";
@@ -124,13 +124,13 @@ while (!$result->EOF) {
     } else {
         echo "<tr class='oddLine'>";
     }
-    
+
     if (!($result->fields[4] == 'yes' && $result->fields[5] == 'yes')) {
         echo "<td width='1%'><input type='checkbox' name='del[]' class='delCheckbox' value='{$result->fields[0]}'></td>";
     } else {
         echo "<td width='1%'><img src='{$webBaseDir}modules/messages/old.png'></td>";
     }
-    
+
     if ($result->fields[4] == 'yes') {
         echo "<td width='1%'><img src='{$webBaseDir}modules/messages/new.png'></td>";
     } else {
@@ -141,11 +141,11 @@ while (!$result->EOF) {
     } else {
         echo "<td width='1%'><img src='{$webBaseDir}modules/messages/old.png'></td>";
     }
-    
+
     echo "<td><a href='index.php?p=messages&view={$result->fields[0]}'>{$result->fields[1]}</a></td>";
     echo "<td><a href='index.php?p=messages&view={$result->fields[0]}'>" . htmlentities($result->fields[2]) . "</a></td>";
     echo "<td><a href='index.php?p=messages&view={$result->fields[0]}'>" . FormatDate($result->fields[3]) . "</a></td>";
-    
+
     echo "</tr>";
     $row++;
     $result->MoveNext();
@@ -184,7 +184,7 @@ if (isset($_GET['view'])) {
             messages.sent_to, messages.message
             from messages left join users on messages.from_user = users.id
             where messages.inbox_of = ? and messages.id = ?", $userId, $_GET['view']);
-    
+
     TableHeader("Read");
     echo "<table class='plainTable'>";
     echo "<tr><td width='1%' class='titleLine'>" . str_replace(" ", "&nbsp;",
@@ -201,7 +201,7 @@ if (isset($_GET['view'])) {
         $data = trim(substr($data, 0, strpos($data, "--* DO NOT TOUCH *--")));
     }
     echo "<tr><td colspan='2'>" . PrettyMessage($data) . "</td></tr>";
-    
+
     // Call the module message_view code if n
     if ($moduleLink != "") {
         $mods = explode("\n", $moduleLink);
@@ -214,12 +214,12 @@ if (isset($_GET['view'])) {
             }
         }
     }
-    
+
     echo "</table>";
     TableFooter();
-    
+
     $result->Close();
-    
+
     ButtonArea();
     LinkButton("Delete", "index.php?p=messages&delete=" . $_GET['view'],
         "return confirm(unescape('" . rawurlencode(Translate("Are you sure you want to delete this message?")) . "'));");
@@ -249,7 +249,7 @@ else {
     if (!isset($_POST["msgContent"])) {
         $_POST["msgContent"] = "";
     }
-    
+
     // We reply therefore let's load back the original message and add the >
     // sign on front
     if (isset($_GET['reply'])) {
@@ -258,7 +258,7 @@ else {
                 messages.sent_to, messages.message
                 from messages left join users on messages.from_user = users.id
                 where messages.inbox_of = ? and messages.id = ?", $userId, $_GET['reply']);
-        
+
         $_POST["msgTo"] = str_replace($username, $result->fields[0], $result->fields[3]);
         $reply = Translate("Re:") . " ";
         if (strncmp($result->fields[1], $reply, strlen($reply)) == 0) {
@@ -266,7 +266,7 @@ else {
         } else {
             $_POST["msgSubject"] = $reply . $result->fields[1];
         }
-        
+
         // Checks if there is a module tag to the message such that we need
         // to run a module for this message as well.
         $data = $result->fields[4];
@@ -275,7 +275,7 @@ else {
             $moduleLink = trim(substr($data, strpos($data, "--* DO NOT TOUCH *--") + 20));
             $data = trim(substr($data, 0, strpos($data, "--* DO NOT TOUCH *--")));
         }
-        
+
         $_POST["msgContent"] = "\n\n\n> " . str_replace("\n", "\n> ", wordwrap(str_replace(array(
                 "[li]",
                 "[ol]\r",
@@ -293,13 +293,13 @@ else {
                 "[/ol]",
                 "\r"
             ), array("", "", "", "", "", "", "", "", "", "", "", "", "", "", ""), $data), 40, "\n"));
-        
+
         $result->Close();
     }
-    
+
     TableHeader("Compose");
     echo "<form method='post' name='composeFrm' action='index.php?p=messages'>";
-    
+
     echo "<table class='plainTable'>";
     if (GetConfigValue("allowsMultipleDestinations") == "true") {
         echo "<tr><td width='1%' class='titleLine'>" . str_replace(" ", "&nbsp;",
@@ -307,13 +307,13 @@ else {
     } else {
         echo "<tr><td width='1%' class='titleLine'>" . str_replace(" ", "&nbsp;",
                 Translate("To")) . ":</td><td>" . SmartSelection("select id,username from users where id <> 1", "msgTo",
-                FindUser($_POST["msgTo"])) . "</td></tr>";
+                FindUser(abs((int)$_POST["msgTo"]))) . "</td></tr>";
     }
     echo "<tr><td width='1%' class='titleLine'>" . str_replace(" ", "&nbsp;",
             Translate("Subject")) . ":</td><td><input type='text' name='msgSubject' value='" . htmlentities($_POST['msgSubject']) . "'></td></tr>";
     echo "<tr><td colspan='2' class='titleLine'>" . str_replace(" ", "&nbsp;", Translate("Message")) . ":</td></tr>";
     echo "<tr><td colspan='2'>" . RichEditor("msgContent", $_POST['msgContent']) . "</td></tr>";
-    
+
     // Some modules have already some meta data inside. Let's handle them
     if ($moduleLink != "") {
         $newModuleLink = "";
@@ -321,15 +321,15 @@ else {
         foreach ($mods as $messageModule) {
             // Allows modules to drop their attached data while replying
             $keepMessageData = true;
-            
+
             list ($moduleName, $moduleValues) = explode(",", str_replace("*--", "", trim(substr($messageModule, 11))));
             $moduleName = strtolower($moduleName);
             parse_str(trim($moduleValues), $moduleValues);
-            
+
             if ($moduleName != "" && file_exists("$baseDir/modules/$moduleName/message_form.php")) {
                 include "$baseDir/modules/$moduleName/message_form.php";
             }
-            
+
             // Message data shall be kept
             if ($keepMessageData) {
                 if ($newModuleLink != "") {
@@ -346,14 +346,14 @@ else {
     } else {
         $_SESSION["messageMetaData"] = null;
     }
-    
+
     // Let's allow to run additional modules
     RunHook("message_compose.php", "moduleLink");
     echo "</table>";
-    
+
     echo "</form>";
     TableFooter();
-    
+
     ButtonArea();
     SubmitButton("Send", "composeFrm");
     if (isset($_GET['reply'])) {

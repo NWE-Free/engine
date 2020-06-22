@@ -11,7 +11,7 @@ class MenuEntry
     public $link;
     public $group;
     public $description;
-    
+
     /**
      * Create a new menu entry
      *
@@ -36,7 +36,7 @@ class MenuEntry
         $this->position = $position;
         $this->group = $group;
         $this->description = $description;
-        
+
         // Link is not defined then let's extract it from the module name
         // calling this function.
         if ($link == null) {
@@ -57,7 +57,7 @@ class MenuEntry
             $this->link = $link;
         }
     }
-    
+
     /**
      * Sort the menu entries by their position then by their label.
      *
@@ -67,7 +67,7 @@ class MenuEntry
     {
         usort($arrayOfMenuEntries, "SortMenuCallback");
     }
-    
+
     public static function HasMenuEntry(&$arrayOfMenuEntries, $name)
     {
         foreach ($arrayOfMenuEntries as $i) {
@@ -99,7 +99,7 @@ function SortMenuCallback($a, $b)
 function BlockModule($module)
 {
     global $db, $userId;
-    
+
     $_SESSION['block'] = $module;
     $db->Execute("update users set blocked_module = ? where id = ?", $module, $userId);
 }
@@ -118,7 +118,7 @@ function GetBlockedModule()
 function ReleaseModule()
 {
     global $db, $userId;
-    
+
     $_SESSION['block'] = null;
     $db->Execute("update users set blocked_module = ? where id = ?", "", $userId);
 }
@@ -133,9 +133,9 @@ $translationModified = false;
 function LoadTranslation()
 {
     global $baseDir, $language, $translation;
-    
+
     $translation = array();
-    
+
     if (file_exists("$baseDir/language/$language.xml")) {
         $doc = new XMLReader();
         $doc->open("$baseDir/language/$language.xml");
@@ -167,29 +167,29 @@ function LoadTranslation()
 function Translate()
 {
     global $translation, $translationModified, $db, $webBase;
-    
+
     $nb = func_num_args();
     $args = func_get_args();
-    
+
     $text = array_shift($args);
     $origText = $text;
-    
+
     if ($translation == null) {
         LoadTranslation();
     }
-    
+
     if (!isset($translation[$text])) {
         $translation[$text] = "";
         $translationModified = true;
     }
-    
+
     if ($translation[$text] != null) {
         $text = $translation[$text];
     }
-    
+
     if (isset($db)) {
         $text = str_replace("!Currency", GetConfigValue("currencyStat", ""), $text);
-        
+
         if (IsAdmin() && isset($_SESSION['show_edit_text']) && $_SESSION['show_edit_text'] == true) {
             return vsprintf($text,
                 $args) . "<a href='index.php?p=admin_language_editor&row=" . rawurlencode($origText) . "'><img src='{$webBase}images/text_edit.gif' border='0'></a>";
@@ -204,11 +204,11 @@ function Translate()
 function StoreTranlation()
 {
     global $baseDir, $language, $translation, $translationModified;
-    
+
     if ($translationModified == false) {
         return;
     }
-    
+
     $doc = new XMLWriter();
     $doc->openUri("$baseDir/language/$language.xml");
     $doc->startDocument('1.0', 'UTF-8');
@@ -236,10 +236,10 @@ $allModules = array();
 function InitModules()
 {
     global $modules, $allModules, $baseDir;
-    
+
     $modules = array();
     $allModules = array();
-    
+
     // Retrieves the base directory (installation) for the game script.
     if (!isset($baseDir)) {
         $cur = getcwd();
@@ -258,9 +258,9 @@ function InitModules()
             }
         }
     }
-    
+
     $dir = scandir("$baseDir/modules");
-    
+
     foreach ($dir as $d) {
         if ($d == "." || $d == ".." || !is_dir("$baseDir/modules/$d")) {
             continue;
@@ -291,7 +291,7 @@ function InitModules()
 function InstallModule($db, $module)
 {
     global $baseDir;
-    
+
     $hasErrors = false;
     if (file_exists("$baseDir/modules/$module/install.sql")) {
         $sql = file_get_contents("$baseDir/modules/$module/install.sql");
@@ -301,18 +301,18 @@ function InstallModule($db, $module)
             if (trim($cmd) == "") {
                 continue;
             }
-            
+
             if ($db->Execute($cmd) === false) {
                 ErrorMessage(Translate("Error whilst executing:<br>%s", $cmd), false);
                 $hasErrors = true;
             }
         }
     }
-    
+
     if (!$hasErrors) {
         $db->Execute("replace into modules(name,version) values(?,?)", $module, GetModuleVersion($module));
     }
-    
+
     return !$hasErrors;
 }
 
@@ -330,7 +330,7 @@ function VersionCompare($a, $b)
 {
     $ap = explode('.', $a);
     $bp = explode('.', $b);
-    
+
     $ai = array();
     foreach ($ap as $i) {
         $ai[] = intval($i);
@@ -339,7 +339,7 @@ function VersionCompare($a, $b)
     foreach ($bp as $i) {
         $bi[] = intval($i);
     }
-    
+
     $nb = min(count($ai), count($bi));
     for ($i = 0; $i < $nb; $i++) {
         if ($ai[$i] < $bi[$i]) {
@@ -373,7 +373,7 @@ function FindUpgrades($directory, $baseVersion, $pattern = "/^upgrade-([0-9_]+)\
             continue;
         }
         $v = str_replace("_", ".", $out[1]);
-        
+
         if (VersionCompare($baseVersion, $v) < 0) {
             $files[$v] = $f;
         }
@@ -397,17 +397,17 @@ function FindUpgrades($directory, $baseVersion, $pattern = "/^upgrade-([0-9_]+)\
 function UpgradeModule($db, $module, $fromVersion)
 {
     global $baseDir;
-    
+
     $hasErrors = false;
-    
+
     $lastVersion = GetModuleVersion($module);
     // Is it the same version? If yes skip.
     if ($lastVersion == $fromVersion) {
         return true;
     }
-    
+
     $files = FindUpgrades("$baseDir/modules/$module", $fromVersion);
-    
+
     foreach ($files as $version => $file) {
         $sql = file_get_contents("$baseDir/modules/$module/$file");
         $sql = str_replace("\r\n", "\n", $sql);
@@ -422,11 +422,11 @@ function UpgradeModule($db, $module, $fromVersion)
             }
         }
     }
-    
+
     if (!$hasErrors) {
         $db->Execute("replace into modules(name,version) values(?,?)", $module, $lastVersion);
     }
-    
+
     return !$hasErrors;
 }
 
@@ -439,20 +439,20 @@ function UpgradeModule($db, $module, $fromVersion)
 function RegisterModuleVariables($module)
 {
     global $baseDir;
-    
+
     // If there is no config.xml then we can quit already
     if (!file_exists("$baseDir/modules/$module/config.xml")) {
         return;
     }
-    
+
     include_once "$baseDir/config/auto_defines.php";
-    
+
     // Read back the auto_defines.php
     $defineCode = str_replace("?>", "", file_get_contents("$baseDir/config/auto_defines.php"));
     $modified = false;
-    
+
     $nextId = 1;
-    
+
     // Find the next free id
     preg_match_all("/,([0-9]+)\\);/", $defineCode, $matches);
     foreach ($matches[1] as $m) {
@@ -461,7 +461,7 @@ function RegisterModuleVariables($module)
             $nextId = $v + 1;
         }
     }
-    
+
     // Read the config file and register all the variables
     $doc = new XMLReader();
     $doc->open("$baseDir/modules/$module/config.xml");
@@ -478,7 +478,7 @@ function RegisterModuleVariables($module)
         }
     }
     $doc->close();
-    
+
     // If modified save
     if ($modified == true) {
         $defineCode .= "?>";
@@ -494,7 +494,7 @@ function RegisterModuleVariables($module)
 function CaptchaShow()
 {
     global $modules, $baseDir;
-    
+
     foreach ($modules as $module) {
         if (file_exists("$baseDir/modules/$module/captcha.php")) {
             include_once "$baseDir/modules/$module/captcha.php";
@@ -512,7 +512,7 @@ function CaptchaShow()
 function CaptchaCheck()
 {
     global $modules, $baseDir;
-    
+
     foreach ($modules as $module) {
         if (file_exists("$baseDir/modules/$module/captcha.php")) {
             include_once "$baseDir/modules/$module/captcha.php";
@@ -531,9 +531,9 @@ function CaptchaCheck()
 function IncludePrivatePage($page)
 {
     global $gameName, $modules, $allModules, $baseDir, $defaultModule, $db, $userStats, $username, $userId, $moduleLoaded, $moduleTime, $template, $webBaseDir;
-    
+
     $time_start = Database::microtime_float();
-    
+
     // Path is not defined, then load the default
     if ($page == "") {
         $moduleLoaded = $defaultModule;
@@ -551,7 +551,7 @@ function IncludePrivatePage($page)
             include "$baseDir/modules/$path/content.php";
         }
     }
-    
+
     $time_end = Database::microtime_float();
     $moduleTime = $time_end - $time_start;
 }
@@ -565,7 +565,7 @@ function IncludePrivatePage($page)
 function IncludePublicPage($page)
 {
     global $gameName, $modules, $baseDir, $defaultPublic, $db, $webBaseDir, $userId;
-    
+
     // Path is not defined, then load the default
     if ($page == "") {
         include "$baseDir/modules/$defaultPublic/public.php";
@@ -593,7 +593,7 @@ function IncludePublicPage($page)
 function FindUser($user)
 {
     global $db;
-    
+
     $id = $user + 0;
     if ($id != 0) {
         $result = $db->Execute("select id from users where id=?", $user);
@@ -602,7 +602,7 @@ function FindUser($user)
     } else {
         $result = $db->Execute("select id from users where username=?", $user);
     }
-    
+
     if ($result->EOF) {
         $result->Close();
         return null;
@@ -630,13 +630,13 @@ $cachedConfigKeys = array();
 function GetConfigValue($keyName, $module = -1)
 {
     global $baseDir, $cachedConfigValue, $cachedConfigKeys, $db;
-    
+
     if ($module == -1) {
         $bt = debug_backtrace();
         $f = array_shift($bt);
         $filename = str_replace("\\", "/", $f["file"]);
         $path = explode("/", $filename);
-        
+
         if (in_array("cached_libs", $path)) {
             $f = array_shift($bt);
             $hookName = explode("/", str_replace("\\", "/", $f['file']));
@@ -647,7 +647,7 @@ function GetConfigValue($keyName, $module = -1)
             $module = array_pop($path);
         }
     }
-    
+
     // Load back all the DB configuration values in one shot
     // (reduces the number of queries and speedup the code)
     if (count($cachedConfigValue) == 0) {
@@ -659,17 +659,17 @@ function GetConfigValue($keyName, $module = -1)
         }
         $result->Close();
     }
-    
+
     // Is a cached value? If yes return the cached value.
     if (isset($cachedConfigValue[$module . "_" . $keyName])) {
         return $cachedConfigValue[$module . "_" . $keyName];
     }
-    
+
     // We didn't found it via $module, let's search without
     if (isset($cachedConfigKeys[$keyName])) {
         return $cachedConfigValue[$cachedConfigKeys[$keyName] . "_" . $keyName];
     }
-    
+
     // Not in the database then fall back to the XML file
     $value = null;
     if (file_exists("$baseDir/modules/$module/config.xml")) {
@@ -689,7 +689,7 @@ function GetConfigValue($keyName, $module = -1)
         $doc->close();
     }
     $cachedConfigValue[$module . "_" . $keyName] = $value;
-    
+
     return $value;
 }
 
@@ -711,13 +711,13 @@ function GetConfigValue($keyName, $module = -1)
 function SetConfigValue($keyName, $value, $module = -1)
 {
     global $baseDir, $db, $storeXmlConfig, $cachedConfigValue;
-    
+
     if ($module == -1) {
         $bt = debug_backtrace();
         $f = array_shift($bt);
         $filename = str_replace("\\", "/", $f["file"]);
         $path = explode("/", $filename);
-        
+
         if (in_array("cached_libs", $path)) {
             $f = array_shift($bt);
             $hookName = explode("/", str_replace("\\", "/", $f['file']));
@@ -728,7 +728,7 @@ function SetConfigValue($keyName, $value, $module = -1)
             $module = array_pop($path);
         }
     }
-    
+
     // Load back all the DB configuration values in one shot
     // (reduces the number of queries and speedup the code)
     if (count($cachedConfigValue) == 0) {
@@ -740,7 +740,7 @@ function SetConfigValue($keyName, $value, $module = -1)
         }
         $result->Close();
     }
-    
+
     if (isset($cachedConfigValue[$module . "_" . $keyName])) {
         $cachedConfigValue[$module . "_" . $keyName] = $value;
     } // We didn't found it via $module, let's search without
@@ -748,11 +748,11 @@ function SetConfigValue($keyName, $value, $module = -1)
         $module = $cachedConfigKeys[$keyName];
         $cachedConfigValue[$module . "_" . $keyName] = $value;
     }
-    
+
     if (isset($cachedConfigValue[$module . "_" . $keyName])) {
         $db->Execute("replace into module_config_values(module,name,value) values(?,?,?)", $module, $keyName, $value);
     }
-    
+
     if ($storeXmlConfig === true) {
         // To update (easily) the XML file, we use the DOM parser instead of the
         // XML
@@ -786,15 +786,15 @@ function GetModuleVersion($module)
 {
     global $baseDir, $moduleInfo;
     $returnValue = "0.0.0";
-    
+
     if (isset($moduleInfo[$module])) {
         return $moduleInfo[$module]["version"];
     }
-    
+
     if ($module != "core" && !file_exists("$baseDir/modules/$module/config.xml")) {
         return $returnValue;
     }
-    
+
     $doc = new XMLReader();
     if ($module == "core") {
         $doc->open("$baseDir/modules/config.xml");
@@ -828,15 +828,15 @@ function GetModuleAuthor($module)
 {
     global $baseDir, $moduleInfo;
     $returnValue = "";
-    
+
     if (isset($moduleInfo[$module])) {
         return $moduleInfo[$module]["author"];
     }
-    
+
     if (!file_exists("$baseDir/modules/$module/config.xml")) {
         return $returnValue;
     }
-    
+
     $doc = new XMLReader();
     $doc->open("$baseDir/modules/$module/config.xml");
     while ($doc->read()) {
@@ -868,15 +868,15 @@ function GetModuleDescription($module)
 {
     global $baseDir, $moduleInfo;
     $returnValue = "";
-    
+
     if (isset($moduleInfo[$module])) {
         return $moduleInfo[$module]["description"];
     }
-    
+
     if (!file_exists("$baseDir/modules/$module/config.xml")) {
         return $returnValue;
     }
-    
+
     $doc = new XMLReader();
     $doc->open("$baseDir/modules/$module/config.xml");
     while ($doc->read()) {
@@ -905,26 +905,26 @@ function GetModuleDescription($module)
 function GetUserVariable($variableId, $user = null)
 {
     global $db, $userId, $demoEngine;
-    
+
     if ($user == null) {
         $user = $userId;
     }
-    
+
     $value = null;
-    
+
     if (isset($demoEngine) && $demoEngine === true && $user == $userId) {
         if (isset($_SESSION["user_vars"]) && isset($_SESSION["user_vars"][$variableId])) {
             return $_SESSION["user_vars"][$variableId];
         }
     }
-    
+
     $result = $db->Execute("select value from user_variables where user_id = ? and variable_id = ?", $user,
         $variableId);
     if (!$result->EOF) {
         $value = $result->fields[0];
     }
     $result->Close();
-    
+
     return $value;
 }
 
@@ -939,11 +939,11 @@ function GetUserVariable($variableId, $user = null)
 function SetUserVariable($variableId, $value, $user = null)
 {
     global $db, $userId, $demoEngine;
-    
+
     if ($user == null) {
         $user = $userId;
     }
-    
+
     if (isset($demoEngine) && $demoEngine === true && $user == $userId) {
         if (!isset($_SESSION["user_vars"])) {
             $_SESSION["user_vars"] = array();
@@ -951,7 +951,7 @@ function SetUserVariable($variableId, $value, $user = null)
         $_SESSION["user_vars"][$variableId] = $value;
         return;
     }
-    
+
     $db->Execute("replace into user_variables(user_id,variable_id,value) values(?,?,?)", $user, $variableId, $value);
 }
 
@@ -998,9 +998,9 @@ function PostMessageToServer($host, $url, $message, $proto = "http")
         if (!$fp) {
             throw new Exception("Error: $errstr ($errno)<br>\n");
         }
-        
+
         $http = "POST $url HTTP/1.1\r\n";
-        
+
         fputs($fp, $http);
         fputs($fp, "Host: " . $host . "\r\n");
         fputs($fp, "Accept-Language: en-us,en;q=0.5\r\n");
@@ -1012,7 +1012,7 @@ function PostMessageToServer($host, $url, $message, $proto = "http")
         fputs($fp, "\r\n");
         fputs($fp, $message);
         fflush($fp);
-        
+
         $res = stream_get_contents($fp);
         $res = substr($res, strpos($res, "\r\n\r\n") + 4);
         fclose($fp);
@@ -1049,21 +1049,21 @@ function SendRepositoryMessage($message)
 function SmartSelection($source, $fieldId, $defaultValue = false)
 {
     global $content, $webBaseDir, $db;
-    
+
     if ($defaultValue === false && isset($_POST[$fieldId])) {
         $defaultValue = $_POST[$fieldId];
     }
-    
+
     $res = preg_split("/[^a-zA-Z0-9_]/", strtolower($source), -1, PREG_SPLIT_NO_EMPTY);
     if ($res[1] == "unique" || $res[1] == "distinct") {
         array_splice($res, 1, 1);
     }
-    
+
     $colA = $res[1];
     $colB = $res[2];
-    
+
     $displayText = "";
-    
+
     if ($defaultValue !== false) {
         if (in_array("where", $res)) {
             $query = "$source and $colA = ?";
@@ -1075,12 +1075,12 @@ function SmartSelection($source, $fieldId, $defaultValue = false)
             $displayText = $result->fields[1];
         }
     }
-    
+
     $html = "";
     if (strpos($content['footerScript'], "smart_pick.js") === false) {
         $content['footerScript'] .= "<script src='{$webBaseDir}js/smart_pick.js'></script>";
     }
-    
+
     $html .= "<table class='plainTable'>";
     $html .= "<tr><td>";
     if ($defaultValue !== false) {
@@ -1090,16 +1090,16 @@ function SmartSelection($source, $fieldId, $defaultValue = false)
     }
     $html .= "<input type='text' id='type_$fieldId' onkeyup='smartKeyPress(\"$fieldId\");' value='" . htmlentities($displayText) . "' onfocus='smartFocus(\"{$fieldId}\");' onblur='smartBlur(\"{$fieldId}\");'></td></tr>\n";
     $html .= "<tr id='row_choice_{$fieldId}' style='visibility: hidden; position: absolute;'><td><select id='choice_{$fieldId}' size='10' onclick='smartPickClick(\"{$fieldId}\");' onfocus='smartFocus(\"{$fieldId}\");' onblur='smartBlur(\"{$fieldId}\");'>\n";
-    
+
     if (!isset($_SESSION["smartPick"])) {
         $_SESSION["smartPick"] = array();
     }
-    
+
     // Store the query for the ajax callback
     $_SESSION["smartPick"][$fieldId] = $source;
-    
+
     $query = "$source order by $colB limit 0,30";
-    
+
     $result = $db->Execute($query);
     while (!$result->EOF) {
         $html .= "<option value='{$result->fields[0]}'>{$result->fields[1]}</option>";
@@ -1108,7 +1108,7 @@ function SmartSelection($source, $fieldId, $defaultValue = false)
     $result->Close();
     $html .= "</select></td></tr>";
     $html .= "</table>";
-    
+
     return $html;
 }
 
@@ -1147,7 +1147,7 @@ $evalCode = array();
 function NWEval($code)
 {
     global $evalCode, $userStats, $modules, $allModules, $db, $content;
-    
+
     $evalCode[] = $code;
     $res = eval($code);
     array_pop($evalCode);
@@ -1180,14 +1180,14 @@ function engine_stop()
 function handle_error($errorMessage, $filename, $lineNumber, $stack)
 {
     global $db, $content, $template, $isAdmin, $alwaysShowErrorDetails, $modules, $baseDir, $isSuperUser, $evalCode, $userId;
-    
+
     ob_get_clean();
     ob_start();
-    
+
     $template = "error";
-    
+
     $filename = str_replace("\\", "/", $filename);
-    
+
     $fullError = "";
     if (isset($db) && isset($db->conn) && isset($db->conn->error) && $db->conn->error != null && $db->conn->error != "") {
         $fullError .= "Query error: " . $db->conn->error . "<br>";
@@ -1198,7 +1198,7 @@ function handle_error($errorMessage, $filename, $lineNumber, $stack)
     } else {
         $fullError .= "Error: $errorMessage<br>";
     }
-    
+
     if (strpos($errorMessage, "unexpected T_STRING") !== false) {
         $fullError .= "<b style='color: blue;'>HINT:</b> Maybe you didn't closed / escaped a string correctly or missing a ; sign at the end of a line.<br><br>";
     } else if (strncmp($errorMessage, "Undefined index: ", 17) == 0) {
@@ -1210,14 +1210,14 @@ function handle_error($errorMessage, $filename, $lineNumber, $stack)
     } else if (strncmp($errorMessage, "syntax error,", 13) == 0) {
         $fullError .= "<b style='color: blue;'>HINT:</b> Maybe you forget to put a ; sign at the end of a line.<br><br>";
     }
-    
+
     if (count($evalCode) > 0) {
         $fullError .= "Error in evaluated code:<br>";
         $fullError .= "<div style='border: solid 2px red; padding: 3px;'><pre>";
         $fullError .= $evalCode[count($evalCode) - 1];
         $fullError .= "</pre></div>";
     }
-    
+
     // Shows the link to the code editor if the module exists.
     if (function_exists("Secure") && in_array("admin_code_editor", $modules) && strncmp(substr($filename,
             strlen($baseDir) + 1), "modules/", 8) == 0
@@ -1228,7 +1228,7 @@ function handle_error($errorMessage, $filename, $lineNumber, $stack)
     } else {
         $fullError .= "Error in \"$filename\"<br>Line $lineNumber<br>";
     }
-    
+
     array_shift($stack);
     foreach ($stack as $s) {
         if (isset($s['file'])) {
@@ -1238,12 +1238,12 @@ function handle_error($errorMessage, $filename, $lineNumber, $stack)
             $fullError .= "Line {$s['line']}<br>";
         }
     }
-    
+
     // Admin show the full info
     if ($alwaysShowErrorDetails == true || ($isAdmin && GetConfigValue("adminViewException", "bug_tracking") != "no")) {
         echo "$fullError<br>";
     }
-    
+
     echo Translate("Please help us to improve the game by providing as much information regards any bugs.");
     if ($userId == -1 && !($alwaysShowErrorDetails == true || ($isAdmin && GetConfigValue("adminViewException",
                     "bug_tracking") != "no"))
@@ -1261,11 +1261,11 @@ function handle_error($errorMessage, $filename, $lineNumber, $stack)
     SubmitButton("Report", "reportBug");
     LinkButton("Back", "index.php");
     EndButtonArea();
-    
+
     $_SESSION["bug_line"] = $lineNumber;
     $_SESSION["bug_file"] = $filename;
     $_SESSION["bug_report"] = str_replace("<br>", "\n", $fullError);
-    
+
     $content['main'] = ob_get_clean();
     // Clean the output to avoid double content
     error_reporting(0);
@@ -1276,11 +1276,11 @@ function handle_error($errorMessage, $filename, $lineNumber, $stack)
 /**
  * Receives the callback from the set_error_handler
  *
- * @param $errno        unknown_type
- * @param $errorMessage unknown_type
- * @param $filename     unknown_type
- * @param $lineNumber   unknown_type
- * @param $vars         unknown_type
+ * @param $errno        integer
+ * @param $errorMessage string
+ * @param $filename     string
+ * @param $lineNumber   integer|string
+ * @param $vars         mixed
  */
 function engine_error_handling($errno, $errorMessage, $filename, $lineNumber, $vars)
 {
@@ -1302,9 +1302,9 @@ function engine_error_handling($errno, $errorMessage, $filename, $lineNumber, $v
 function TimeInterval($startTime, $endTime = null, $reloadWhenZero = true)
 {
     global $webBaseDir, $content;
-    
+
     static $timeIntervalId = 0;
-    
+
     if ($timeIntervalId == 0) {
         Ajax::IncludeLib();
         $content['footerScript'] .= "<script src='{$webBaseDir}js/time_interval.js'></script>";
@@ -1317,17 +1317,17 @@ function TimeInterval($startTime, $endTime = null, $reloadWhenZero = true)
         $content['footerJS'] .= "intervalTextSeconds=unescape('" . rawurlencode(Translate("seconds")) . "');\n";
         $content['footerJS'] .= "intervalTextSecond=unescape('" . rawurlencode(Translate("second")) . "');\n";
     }
-    
+
     if ($endTime == null) {
         $endTime = time();
     }
-    
+
     $res = "<span id='diff_time_$timeIntervalId'>";
     $diff = $endTime - $startTime;
     // Add one sec to be sure to not reload before time.
     $diff++;
     $days = floor($diff / 86400.0);
-    
+
     if ($days > 0) {
         $diff = $diff % 86400;
         $res .= $days . " " . ($days > 1 ? Translate("days") : Translate("day")) . " ";
@@ -1337,7 +1337,7 @@ function TimeInterval($startTime, $endTime = null, $reloadWhenZero = true)
     $min = floor($diff / 60);
     $diff = $diff % 60;
     $secs = $diff;
-    
+
     if ($hours > 0) {
         $res .= $hours . " " . ($hours > 1 ? Translate("hours") : Translate("hour")) . " ";
     }
@@ -1348,7 +1348,7 @@ function TimeInterval($startTime, $endTime = null, $reloadWhenZero = true)
         $res .= $secs . " " . ($secs > 1 ? Translate("seconds") : Translate("second")) . " ";
     }
     $res .= "</span>";
-    
+
     $content['footerJS'] .= "intervalGoalTime[$timeIntervalId]=" . ($endTime - $startTime) . ";\n";
     $content['footerJS'] .= "intervalGoalReload[$timeIntervalId]=" . ($reloadWhenZero ? "true" : "false") . ";\n";
     $timeIntervalId++;
@@ -1403,19 +1403,19 @@ function PrettyMessageLinkReplace($matches)
 function PrettyMessage($source)
 {
     global $baseDir, $webBaseDir;
-    
+
     $source = htmlentities($source);
-    
+
     include "$baseDir/smilies/smilies.php";
     foreach ($smilies as $key => $val) {
         $source = str_replace($key, "<img src='{$webBaseDir}smilies/$val.gif'>", $source);
     }
-    
+
     $source = preg_replace_callback('/(^|[^' . "'" . '])(http(|s):\/\/[a-zA-Z0-9\/\-\+:\.\?=_\&\#\;\%\,]*(\.jpg|\.jpeg|\.gif|\.png))($|[^' . "'" . '])/',
         "PrettyMessageImageReplace", $source);
     $source = preg_replace_callback('/(^|\s|\>)(http[s]{0,1}:\/\/[a-zA-Z0-9\/\-\+:\.\?=_\&\#\;\%\,]{1,30})([a-zA-Z0-9\/\-\+:\.\?=_\&\#\;\%\,]*)/',
         "PrettyMessageLinkReplace", $source);
-    
+
     // Allows modules to extend this feature
     global $sourceText;
     $sourceText = $source;
@@ -1434,7 +1434,7 @@ function GetModuleCode($moduleName, $type = "module")
 {
     global $baseDir, $allModules;
     $dir = "";
-    
+
     $data = array();
     if ($type == "template") {
         $files = scandir("$baseDir/templates");
@@ -1445,11 +1445,11 @@ function GetModuleCode($moduleName, $type = "module")
             }
             $templates[] = $i;
         }
-        
+
         if (!in_array($moduleName, $templates)) {
             return null;
         }
-        
+
         $dir = "$baseDir/templates/$moduleName";
     } else if ($type == "fonts") {
         $files = scandir("$baseDir/images/fonts");
@@ -1460,11 +1460,11 @@ function GetModuleCode($moduleName, $type = "module")
             }
             $templates[] = $i;
         }
-        
+
         if (!in_array($moduleName, $templates)) {
             return null;
         }
-        
+
         $dir = "$baseDir/images/fonts/$moduleName";
     } else {
         if (!in_array($moduleName, $allModules)) {
@@ -1472,7 +1472,7 @@ function GetModuleCode($moduleName, $type = "module")
         }
         $dir = "$baseDir/modules/$moduleName";
     }
-    
+
     $todo = scandir($dir);
     while (count($todo) > 0) {
         $f = array_pop($todo);
@@ -1510,7 +1510,7 @@ function GetModuleCode($moduleName, $type = "module")
             $data[$f] = file_get_contents("$dir/$f");
         }
     }
-    
+
     return $data;
 }
 
@@ -1523,19 +1523,19 @@ function GetModuleCode($moduleName, $type = "module")
 function CleanDirectory($dirName)
 {
     global $baseDir;
-    
+
     $dirName = str_replace("\\", "/", $dirName);
     $path = explode("/", $dirName);
     // Checks that we do not contain a . or ..
     if (in_array(".", $path) || in_array("..", $path)) {
         throw new Exception("Invalid path");
     }
-    
+
     // Checks that only modules directory are touched.
     if (strncmp($baseDir, $dirName, strlen($baseDir)) != 0) {
         throw new Exception("Invalid path");
     }
-    
+
     if (!file_exists($dirName)) {
         return;
     }
@@ -1543,7 +1543,7 @@ function CleanDirectory($dirName)
         unlink($dirName);
         return;
     }
-    
+
     $todo = scandir($dirName);
     foreach ($todo as $t) {
         if ($t == "." || $t == "..") {
@@ -1569,15 +1569,15 @@ function CleanDirectory($dirName)
 function StoreModule($moduleName, $moduleData, $type)
 {
     global $baseDir;
-    
+
     if (!in_array($type, array("module", "template", "fonts"))) {
         throw new Exception("Wrong package type.");
     }
-    
+
     if (preg_match("/^[a-z0-9_\\-]+\$/", $moduleName) != 1) {
         throw new Exception("Module name is invalid");
     }
-    
+
     if ($type == "template" && !is_writable("$baseDir/templates")) {
         throw new Exception("Template directory is not writtable");
     }
@@ -1587,7 +1587,7 @@ function StoreModule($moduleName, $moduleData, $type)
     if ($type == "fonts" && !is_writable("$baseDir/images/fonts")) {
         throw new Exception("Fonts directory is not writtable");
     }
-    
+
     if ($type == "template") {
         $dir = "$baseDir/templates/$moduleName";
     } else if ($type == "fonts") {
@@ -1595,21 +1595,21 @@ function StoreModule($moduleName, $moduleData, $type)
     } else {
         $dir = "$baseDir/modules/$moduleName";
     }
-    
+
     // Remove the existing files
     if (file_exists($dir)) {
         CleanDirectory($dir);
     }
-    
+
     // Create the directory
     @mkdir($dir, 0777, true);
-    
+
     foreach ($moduleData as $key => $val) {
         $path = explode("/", $key);
         if (in_array(".", $path) || in_array("..", $path)) {
             throw new Exception("Module path seems invalid");
         }
-        
+
         if ($val == null) {
             @mkdir("$dir/$key", 0777, true);
         } else {
@@ -1630,13 +1630,13 @@ function StoreInstallModule($moduleName, $moduleData, $type)
 {
     global $db;
     $isOk = true;
-    
+
     // Checks if there is a config.xml inside the module
     if (isset($moduleData["config.xml"])) {
         $doc = new XMLReader();
         // Loads the XML from the string
         $doc->XML($moduleData["config.xml"]);
-        
+
         // Extract the requirements from the config.xml
         $requirements = array();
         while ($doc->read()) {
@@ -1651,7 +1651,7 @@ function StoreInstallModule($moduleName, $moduleData, $type)
             }
         }
         $doc->close();
-        
+
         // We do have requirements, let's check if we meet them.
         if (count($requirements) > 0) {
             $result = "";
@@ -1667,21 +1667,21 @@ function StoreInstallModule($moduleName, $moduleData, $type)
             }
         }
     }
-    
+
     try {
         StoreModule($moduleName, $moduleData, $type);
     } catch (Exception $ex) {
         ErrorMessage($ex->getMessage(), false);
         return false;
     }
-    
+
     $result = $db->Execute("select version from modules where name = ?", $moduleName);
     $version = null;
     if (!$result->EOF) {
         $version = $result->fields[0];
     }
     $result->Close();
-    
+
     if ($version == null) {
         $isOk = InstallModule($db, $moduleName);
         RegisterModuleVariables($moduleName);
@@ -1754,7 +1754,7 @@ function FormatNumber($number, $decimal = 0)
 function IsPlayerOnline($user)
 {
     global $db;
-    
+
     $uid = FindUser($user);
     if ($uid == null) {
         return false;

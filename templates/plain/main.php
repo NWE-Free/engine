@@ -4,6 +4,7 @@
     <title><?php echo $gameName; ?></title>
     <link rel="icon" type="image/png"
           href="<?php echo $webBaseDir; ?>favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="<?php echo $webBaseDir; ?>templates/plain/plain.css"
           type="text/css" rel="stylesheet"/>
     <?php echo $content['header']; ?>
@@ -13,8 +14,9 @@
     echo "<br><br>";
     echo $content['stats']; ?></div>
 <div id="sideMenu">
-    Menu: <br>
-    <?php echo $content['sideMenu']; ?>
+    <div id='sideMenuHeader'></div>
+    <div id='sideMenuContent'><?php echo $content['sideMenu']; ?></div>
+    <div id='sideMenuFooter'></div>
     <br>
     <center><?php VerifyIt(); ?></center>
 </div>

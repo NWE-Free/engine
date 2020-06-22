@@ -16,7 +16,7 @@ function HasModulesToUpgrade()
     if (CanPostToServer()) {
         // Retreive all modules information
         global $moduleInfo, $allModules, $baseDir;
-        
+
         $moduleKeys = array();
         $moduleTables = array();
         foreach ($allModules as $m) {
@@ -47,16 +47,16 @@ function HasModulesToUpgrade()
             }
             $doc->close();
         }
-        
+
         $mods = array();
         foreach ($moduleInfo as $key => $vals) {
             $mods[$key] = $vals["version"];
         }
-        
-        $res = PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "mods=" . urlencode(serialize($mods)));
-        $diffs = unserialize($res);
-        
-        return (count($diffs) > 0);
+
+        //$res = PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "mods=" . urlencode(serialize($mods)));
+        //$diffs = unserialize($res);
+        //
+        //return (count($diffs) > 0);
     }
     return false;
 }
@@ -64,20 +64,20 @@ function HasModulesToUpgrade()
 function HasAdditionalModules()
 {
     global $allModules, $demoEngine, $engineLicenseKey, $db, $baseDir;
-    
+
     if (!CanPostToServer()) {
         return false;
     }
-    
+
     if ($engineLicenseKey != "-") {
         if (!(isset($demoEngine) && $demoEngine == true) && isset($_GET["install"])) {
             $data = file_get_contents("http://nwe.funmayhem.com/get_module.php?l=$engineLicenseKey&m=" . urlencode($_GET["install"]));
             $data = unserialize(gzuncompress($data));
-            
+
             if (StoreInstallModule($data['name'], $data['data'], $data['type'])) {
                 ResultMessage("Module correctly installed.");
             }
-            
+
             CleanHookCache();
             $allModules = array();
             $files = scandir("$baseDir/modules");
@@ -87,11 +87,11 @@ function HasAdditionalModules()
                 }
             }
         }
-        
+
         if (isset($_GET["ignore"])) {
             $db->Execute("insert into module_manager_ignore(name) values(?)", $_GET["ignore"]);
         }
-        
+
         $installedModules = $allModules;
         $result = $db->Execute("select name from module_manager_ignore");
         foreach ($result as $m) {
@@ -109,12 +109,13 @@ function HasAdditionalModules()
                 $installedModules[] = $f;
             }
         }
-        $r = PostMessageToServer("nwe.funmayhem.com", "/check_available.php",
-            "l=$engineLicenseKey&list=" . urlencode(serialize($installedModules)));
-        if ($r == "- INVALID -") {
-            return;
-        }
-        
+        $r = '';
+        //$r = PostMessageToServer("nwe.funmayhem.com", "/check_available.php",
+        //    "l=$engineLicenseKey&list=" . urlencode(serialize($installedModules)));
+        //if ($r == "- INVALID -") {
+        //    return;
+        //}
+
         if ($r == "") {
             return false;
         }
@@ -160,7 +161,7 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
         echo "<a href='http://nwe.funmayhem.com/verify.php?l=" . substr($engineLicenseKey, 0,
                 10) . "' target='_blank'>" . Translate("License is valid and checked.") . "</a><br>";
     }
-    
+
     if (HasAdditionalModules()) {
         if (file_exists("$baseDir/modules/admin_module_manager")) {
             echo "<a href='index.php?p=admin_module_manager'>" . Translate("Additional modules available") . "</a><br>";
@@ -168,7 +169,7 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
             echo "<b>" . Translate("Additional modules available") . "</b><br>";
         }
     }
-    
+
     if (HasModulesToUpgrade()) {
         if (file_exists("$baseDir/modules/admin_module_manager")) {
             echo "<a href='index.php?p=admin_module_manager'>" . Translate("New module(s) version available.") . "</a><br>";
@@ -187,11 +188,11 @@ echo "<style>
 </style>";
 TableHeader("NWE News:");
 echo "<div style='height: 90px; overflow: auto;'>";
-if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin_panel") == "false") {
-    readfile("http://nwe.funmayhem.com/news.php");
-} else {
-    echo "<b style='color: red;'>" . Translate("Offline mode, no checks on the server.") . "</b>";
-}
+//if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin_panel") == "false") {
+//    readfile("http://nwe.funmayhem.com/news.php");
+//} else {
+//    echo "<b style='color: red;'>" . Translate("Offline mode, no checks on the server.") . "</b>";
+//}
 echo "</div>";
 TableFooter();
 echo "</td></tr></table>";
@@ -217,12 +218,12 @@ foreach ($adminEntries as $entry) {
         $currentGroup = $entry->group;
         $lastGroup = $entry->group;
     }
-    
+
     if ($currentGroup == null) {
         TableHeader("Administration function");
         $currentGroup = "Administration function";
     }
-    
+
     if (strncmp($entry->link, "index.php", 9) == 0) {
         echo "<span class='panelMenuEntry'><a href='{$entry->link}'>" . Translate($entry->label) . "</a></span>";
     } else if (file_exists("$baseDir/modules/{$entry->link}/admin.php")) {

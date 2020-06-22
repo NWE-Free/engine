@@ -11,69 +11,69 @@ var intervalTextSeconds = "second";
 
 function HandleTimeInterval()
 {
-	var now = new Date();
-	var unix = Math.round(now.getTime() / 1000);
-	for ( var i = 0; i < intervalGoalTime.length; i++)
-	{
-		var html = "";
-		var diff = intervalGoalTime[i] - unix;
+    var now = new Date();
+    var unix = Math.round(now.getTime() / 1000);
+    for ( var i = 0; i < intervalGoalTime.length; i++)
+    {
+        var html = "";
+        var diff = intervalGoalTime[i] - unix;
 
-		if (diff <= 0 && intervalGoalReload[i] == true)
-		{
-			window.location.reload(true);
-			intervalGoalReload[i] = false;
-		}
-		else if(diff < 0)
-			continue;
+        if (diff <= 0 && intervalGoalReload[i] == true)
+        {
+            window.location.reload(true);
+            intervalGoalReload[i] = false;
+        }
+        else if(diff < 0)
+            continue;
 
-		var days = Math.floor(diff / 86400.0);
-		diff = diff % 86400;
-		var hours = Math.floor(diff / 3600);
-		diff = diff % 3600;
-		var min = Math.floor(diff / 60);
-		diff = diff % 60;
-		var sec = diff;
+        var days = Math.floor(diff / 86400.0);
+        diff = diff % 86400;
+        var hours = Math.floor(diff / 3600);
+        diff = diff % 3600;
+        var min = Math.floor(diff / 60);
+        diff = diff % 60;
+        var sec = diff;
 
-		if (days == 1)
-			html += days + " " + intervalTextDay + " ";
-		else if (days > 1)
-			html += days + " " + intervalTextDays + " ";
+        if (days == 1)
+            html += days + " " + intervalTextDay + " ";
+        else if (days > 1)
+            html += days + " " + intervalTextDays + " ";
 
-		if (hours == 1)
-			html += hours + " " + intervalTextHour + " ";
-		else if (hours > 1)
-			html += hours + " " + intervalTextHours + " ";
+        if (hours == 1)
+            html += hours + " " + intervalTextHour + " ";
+        else if (hours > 1)
+            html += hours + " " + intervalTextHours + " ";
 
-		if (min == 1)
-			html += min + " " + intervalTextMinute + " ";
-		else if (min > 1)
-			html += min + " " + intervalTextMinutes + " ";
+        if (min == 1)
+            html += min + " " + intervalTextMinute + " ";
+        else if (min > 1)
+            html += min + " " + intervalTextMinutes + " ";
 
-		if (sec == 1)
-			html += sec + " " + intervalTextSecond;
-		else if (sec > 1)
-			html += sec + " " + intervalTextSeconds;
+        if (sec == 1)
+            html += sec + " " + intervalTextSecond;
+        else if (sec > 1)
+            html += sec + " " + intervalTextSeconds;
 
-		if (html == "")
-			html = "0 " + intervalTextSeconds;
+        if (html == "")
+            html = "0 " + intervalTextSeconds;
 
-		$("#diff_time_" + i).html(html);
-	}
+        $("#diff_time_" + i).html(html);
+    }
 
-	setTimeout('HandleTimeInterval();', 1000);
+    setTimeout('HandleTimeInterval();', 1000);
 }
 
 function InitTimeInterval()
 {
-	var now = new Date();
-	var unix = Math.round(now.getTime() / 1000);
+    var now = new Date();
+    var unix = Math.round(now.getTime() / 1000);
 
-	for ( var i = 0; i < intervalGoalTime.length; i++)
-	{
-		intervalGoalTime[i] += unix;
-	}
+    for ( var i = 0; i < intervalGoalTime.length; i++)
+    {
+        intervalGoalTime[i] += unix;
+    }
 
-	HandleTimeInterval();
+    HandleTimeInterval();
 }
 
 $(document).ready(InitTimeInterval);

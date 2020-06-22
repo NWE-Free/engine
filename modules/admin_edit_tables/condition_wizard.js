@@ -24,12 +24,13 @@ if (typeof Trim != 'function')
 	}
 }
 
+var conditionWizard;
+
 function AddConditionWizard(colId)
 {
 	var sel = document.getElementById('new_condition_' + colId);
 	var selId = sel.options[sel.selectedIndex].value;
 	var value = document.getElementById('col_' + colId).value;
-
 	for ( var i = 0; i < conditionWizard.length; i++)
 	{
 		if (selId == conditionWizard[i].id)
@@ -108,7 +109,7 @@ function TextChangeConditionWizard(colId, cmdId, fieldId)
 							+ fieldId).value = escape(document
 							.getElementById('cwiz_' + colId + '_' + cmdId + '_'
 									+ fieldId).value);
-					break;					
+					break;
 				default:
 					break;
 			}
@@ -181,7 +182,7 @@ function DisplayConditionWizard(colId)
 
 	var html = "";
 	var preHtml = "";
-	
+
 	var cmd = value.split(' && ');
 	html += "<table class='plainTable'>";
 	for ( var i = 0; i < cmd.length; i++)
@@ -231,7 +232,7 @@ function DisplayConditionWizard(colId)
 					{
 						if (conditionWizard[j]['type_' + (k + 1)] == 't')
 							match[k + 1] = unescape(match[k + 1]);
-						
+
 						html += "<td><input type='text' id='cwiz_" + colId
 								+ "_" + i + "_" + k + "' value='"
 								+ htmlEntities(match[k + 1])

@@ -41,7 +41,7 @@ if (isset($_GET["getcaptcha"]) && $_GET["getcaptcha"] == "true") {
      * Allows to use the session array.
      */
     session_start();
-    
+
     /**
      * The number as simple pixel font.
      * Allows to draw them as we want.
@@ -56,9 +56,9 @@ if (isset($_GET["getcaptcha"]) && $_GET["getcaptcha"] == "true") {
     $font["7"] = array("*****.", "....*.", "...*..", "..*...", ".*....", "*.....");
     $font["8"] = array(".***..", "*...*.", ".***..", "*...*.", "*...*.", ".***..");
     $font["9"] = array(".***..", "*...*.", "*****.", "....*.", "....*.", "****..");
-    
+
     $width = intval(GetConfigValue("captchaLength")) * 18 + 10;
-    
+
     /**
      * Create an image of $width pixel width per 25 pixel height.
      */
@@ -77,7 +77,7 @@ if (isset($_GET["getcaptcha"]) && $_GET["getcaptcha"] == "true") {
      * Allocate the black color we will use to draw the image.
      */
     $black = imagecolorallocate($img, 0, 0, 0);
-    
+
     /**
      * Creates a memory array for the whole string.
      */
@@ -85,7 +85,7 @@ if (isset($_GET["getcaptcha"]) && $_GET["getcaptcha"] == "true") {
     for ($x = 0; $x < 30; $x++) {
         $array[$x] = "......";
     }
-    
+
     $value = "";
     for ($i = 0; $i < intval(GetConfigValue("captchaLength")); $i++) {
         $c = chr(rand(0, 9) + ord("0"));
@@ -96,23 +96,23 @@ if (isset($_GET["getcaptcha"]) && $_GET["getcaptcha"] == "true") {
             }
         }
     }
-    
+
     /**
      * Now start to draw on the image
      */
     $angle = rand(0, 1000) / 300.0;
     for ($x = 0; $x < $width; $x++) {
         for ($y = 0; $y < 25; $y++) {
-            $a = $x - 5;
+            $a = abs((int)$x - 5);
             $b = round($y - 3 + sin($x / 6.0 + $angle) * floatval(GetConfigValue("captchaDeform")));
             $a = round($a / 3);
             $b = round($b / 3);
             if (!($a < 0 || $a >= intval(GetConfigValue("captchaLength")) * 6 || $b < 0 || $b >= 6)) {
-                if ($array[$a][$b] == "*") {
+                if ($array[intval($a)][intval($b)] == "*") {
                     imagesetpixel($img, $x, $y + 1, $black);
                 }
             }
-            
+
             if (GetConfigValue("captchaNoise") == "yes") {
                 if (rand(0, 20) == 0) {
                     imagesetpixel($img, $x, $y, $black);
@@ -126,12 +126,12 @@ if (isset($_GET["getcaptcha"]) && $_GET["getcaptcha"] == "true") {
      * Create a black border around.
      */
     imagerectangle($img, 0, 0, $width - 1, 24, $black);
-    
+
     /**
      * Store the random number in the session array.
      */
     $_SESSION['captcha'] = $value;
-    
+
     /**
      * Return the image to the browser.
      */

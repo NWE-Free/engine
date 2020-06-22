@@ -17,7 +17,7 @@ if (isset($_GET["upg"])) {
             ErrorMessage($data);
         } else {
             $data = unserialize(gzuncompress($data));
-            
+
             if (StoreInstallModule($data['name'], $data['data'], $data['type'])) {
                 ResultMessage("Module correctly installed.");
                 CleanHookCache();
@@ -33,7 +33,7 @@ else if (isset($_GET["snd"])) {
         ErrorMessage("Disabled in the demo");
     } else {
         $moduleName = $_GET['snd'];
-        
+
         $description = "";
         $version = "1.0.0";
         $version = GetModuleVersion($moduleName);
@@ -42,7 +42,7 @@ else if (isset($_GET["snd"])) {
             header("Location: index.php");
             return;
         }
-        
+
         $message = array(
             "command" => "submitModule",
             "name" => $moduleName,
@@ -102,10 +102,11 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
         foreach ($moduleInfo as $key => $vals) {
             $mods[$key] = $vals["version"];
         }
-        
-        $res = PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "mods=" . urlencode(serialize($mods)));
-        $diffs = unserialize($res);
-        
+
+        //$res = PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "mods=" . urlencode(serialize($mods)));
+        //$diffs = unserialize($res);
+        $diffs = [];
+
         if (count($diffs) > 0) {
             TableHeader("Modules to upgrade");
             if (count($diffs) > 5) {
@@ -167,7 +168,7 @@ if (isset($_GET['unlock'])) {
         ErrorMessage("Disabled in the demo");
         return;
     }
-    
+
     // Check that the module really is a module, and that it's not the locker
     // module itself.
     if (in_array($_GET['unlock'], $allModules) && $_GET['unlock'] != "admin_module_manager") {
@@ -175,13 +176,13 @@ if (isset($_GET['unlock'])) {
             unlink("$baseDir/modules/" . $_GET['unlock'] . "/module.lock");
         }
         ResultMessage("Module unlocked");
-        
+
         if (file_exists("$baseDir/modules/{$_GET['unlock']}/on_enable.php")) {
             include "$baseDir/modules/{$_GET['unlock']}/on_enable.php";
         }
-        
+
         CleanHookCache();
-        
+
         InitModules();
     }
 } // Let's lock a module
@@ -191,19 +192,19 @@ else if (isset($_GET['lock'])) {
         ErrorMessage("Disabled in the demo");
         return;
     }
-    
+
     // Check that the module really is a module, and that it's not the locker
     // module itself.
     if (in_array($_GET['lock'], $allModules) && $_GET['lock'] != "admin_module_manager") {
         file_put_contents("$baseDir/modules/" . $_GET['lock'] . "/module.lock", time());
         ResultMessage("Module locked");
-        
+
         if (file_exists("$baseDir/modules/{$_GET['lock']}/on_disable.php")) {
             include "$baseDir/modules/{$_GET['lock']}/on_disable.php";
         }
-        
+
         CleanHookCache();
-        
+
         InitModules();
     }
 }
@@ -213,7 +214,7 @@ else if (isset($_GET['lock'])) {
         if (typeof FindByAttribute != 'function') {
             function FindByAttribute(tag, attr, className) {
                 var result = new Array();
-                
+
                 var elems = document.getElementsByTagName(tag);
                 for (var i = 0; i < elems.length; i++) {
                     if (elems[i].getAttribute(attr) == className)// || elems[i].getAttribute("className") == className)
@@ -224,7 +225,7 @@ else if (isset($_GET['lock'])) {
                 return result;
             }
         }
-        
+
         function expandModuleSection(rowId) {
             if (("" + document.getElementById('tree_node_' + rowId).src).indexOf('minus.png') != -1) {
                 var list = FindByAttribute("tr", "row_attr", "row_" + rowId);
@@ -253,11 +254,11 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
         if (!(isset($demoEngine) && $demoEngine == true) && isset($_GET["install"])) {
             $data = file_get_contents("http://nwe.funmayhem.com/get_module.php?l=$engineLicenseKey&m=" . urlencode($_GET["install"]));
             $data = unserialize(gzuncompress($data));
-            
+
             if (StoreInstallModule($data['name'], $data['data'], $data['type'])) {
                 ResultMessage("Module correctly installed.");
             }
-            
+
             CleanHookCache();
             $allModules = array();
             $files = scandir("$baseDir/modules");
@@ -267,11 +268,11 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
                 }
             }
         }
-        
+
         if (isset($_GET["ignore"])) {
             $db->Execute("insert into module_manager_ignore(name) values(?)", $_GET["ignore"]);
         }
-        
+
         $installedModules = $allModules;
         $result = $db->Execute("select name from module_manager_ignore");
         foreach ($result as $m) {
@@ -294,7 +295,7 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
         if ($r == "- INVALID -") {
             return;
         }
-        
+
         if ($r == "") {
             $availableModules = array();
         } else {
@@ -307,7 +308,7 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
                 $availableModules = array();
             }
         }
-        
+
         if (count($availableModules) > 0) {
             TableHeader("Available Modules");
             if (count($availableModules) > 5) {
@@ -328,12 +329,12 @@ if ($_SERVER["HTTP_HOST"] != "localhost" || GetConfigValue("workOffline", "admin
                 } else {
                     echo "<tr class='oddLine' valign='top'>";
                 }
-                
+
                 echo "<td width='1%'>";
                 LinkButton("Ignore", "index.php?p=admin_module_manager&ignore=" . urlencode($m[1]),
                     "return confirm(unescape('" . rawurlencode(Translate("Are you sure you don't want to see this module in this list anymore?")) . "'));");
                 echo "</td>";
-                
+
                 if ($m[3] == 0) {
                     echo "<td width='1%'>";
                     LinkButton("Install", "index.php?p=admin_module_manager&install=" . urlencode($m[1]));
@@ -383,19 +384,19 @@ foreach ($allModules as $m) {
     } else {
         echo "<tr class='oddLine' valign='top'>";
     }
-    
+
     if (isset($moduleTables[$m]) && (count($moduleTables[$m]) > 0 || count($moduleKeys[$m]) > 0)) {
         echo "<td><a href='#' onclick='expandModuleSection($row);return false;'><img src='{$webBaseDir}images/plus.png' id='tree_node_$row' width='13' height='13' border='0'></a></td>";
     } else {
         echo "<td><img src='{$webBaseDir}images/separator.gif' width='13' height='13'></td>";
     }
-    
+
     // echo "<td><a href='http://nwe.funmayhem.com/index.php?c=modules&mn="
     // . urlencode($m) . "' target='market'><img
     // src='http://nwe.funmayhem.com/check_version.php?m=" .
     // rawurlencode($m) .
     // "&v=" . GetModuleVersion($m) . "' border='0'></a></td>";
-    
+
     if (file_exists("$baseDir/modules/$m/module.lock")) {
         echo "<td><a href='index.php?p=admin_module_manager&unlock=" . urlencode($m) . "' style='color: red; font-weight: bold;'>$m</a></td>";
         echo "<td><a href='index.php?p=admin_module_manager&unlock=" . urlencode($m) . "'>Enable</a></td>";
@@ -407,7 +408,7 @@ foreach ($allModules as $m) {
     echo "<td>" . GetModuleAuthor($m) . "</td>";
     echo "<td>" . GetModuleVersion($m) . "</td>";
     echo "</tr>";
-    
+
     if (isset($moduleTables[$m]) && count($moduleTables[$m]) > 0) {
         foreach ($moduleTables[$m] as $t) {
             if ($row % 2 == 0) {
