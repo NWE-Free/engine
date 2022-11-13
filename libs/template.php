@@ -272,13 +272,17 @@ function ResultMessage($message, $translate = true)
     }
 }
 
+/**
+ * @FIXME: This errors out since the endpoint is not valid
+ */
 function VerifyIt()
 {
     global $engineLicenseKey;
+    echo "Valid";
     
-    echo "<a href='http://nwe.funmayhem.com/verify.php?l=" . substr($engineLicenseKey, 0, 10);
-    echo "&sip=" . $_SERVER['SERVER_ADDR'] . "' target='_blank'><img src='http://nwe.funmayhem.com/verify.php?image=button&l=";
-    echo substr($engineLicenseKey, 0, 10) . "' border='0'></a>";
+    // echo "<a href='http://nwe.funmayhem.com/verify.php?l=" . substr($engineLicenseKey, 0, 10);
+    // echo "&sip=" . $_SERVER['SERVER_ADDR'] . "' target='_blank'><img src='http://nwe.funmayhem.com/verify.php?image=button&l=";
+    // echo substr($engineLicenseKey, 0, 10) . "' border='0'></a>";
 }
 
 /**

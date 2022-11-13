@@ -1139,7 +1139,11 @@ function MakeId($prefix, $label)
  */
 function CheckLastVersion($module)
 {
-    return trim(PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "module=" . $module));
+    return "";
+    /**
+     * Commented out due to the endpoint not working
+     */
+    // return trim(PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "module=" . $module));
 }
 
 $evalCode = array();

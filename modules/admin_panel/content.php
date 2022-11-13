@@ -53,6 +53,10 @@ function HasModulesToUpgrade()
             $mods[$key] = $vals["version"];
         }
 
+        /**
+         * Commented out since the endpoint does not exist
+         */
+
         //$res = PostMessageToServer("nwe.funmayhem.com", "/check_version.php", "mods=" . urlencode(serialize($mods)));
         //$diffs = unserialize($res);
         //
